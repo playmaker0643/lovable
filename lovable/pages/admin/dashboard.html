@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard | CodeBreakers</title>
+  <link rel="stylesheet" href="../../css/style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    .activity-list{display:flex;flex-direction:column;gap:12px;}
+    .activity-item{display:flex;align-items:center;gap:14px;padding:12px;background:rgba(255,255,255,0.02);border-radius:var(--radius);border:1px solid var(--border);}
+    .activity-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+    .activity-item p{font-size:0.85rem;flex:1;}
+    .activity-time{font-size:0.75rem;color:var(--text-dim);white-space:nowrap;}
+    .quick-actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;}
+    .quick-action{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;text-align:center;cursor:pointer;transition:var(--transition);text-decoration:none;display:block;}
+    .quick-action:hover{border-color:var(--border-glow);box-shadow:var(--shadow-glow);}
+    .quick-action i{font-size:1.8rem;display:block;margin-bottom:10px;}
+    .quick-action span{font-size:0.82rem;color:var(--text-muted);font-family:var(--font-heading);letter-spacing:0.5px;}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+    .three-col{display:grid;grid-template-columns:2fr 1fr;gap:24px;}
+    canvas{width:100%;display:block;}
+    @media(max-width:900px){.two-col,.three-col{grid-template-columns:1fr;}}
+  </style>
+</head>
+<body>
+<canvas id="particles-canvas"></canvas>
+<div class="app-layout">
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="nav-logo"><div class="logo-icon"><i class="fas fa-code"></i></div><span class="logo-text">Code<span class="accent">Breakers</span></span></div>
+    </div>
+    <nav class="sidebar-nav">
+      <ul>
+        <li><span class="sidebar-section-title">Main</span></li>
+        <li><a href="dashboard.html" class="sidebar-link active"><i class="fas fa-th-large"></i> Dashboard</a></li>
+        <li><a href="students.html" class="sidebar-link"><i class="fas fa-users"></i> Students <span class="badge badge-primary" style="margin-left:auto;">500</span></a></li>
+        <li><a href="courses.html" class="sidebar-link"><i class="fas fa-book"></i> Courses</a></li>
+        <li><a href="lessons.html" class="sidebar-link"><i class="fas fa-video"></i> Lessons</a></li>
+        <li><span class="sidebar-section-title">Assessments</span></li>
+        <li><a href="exams.html" class="sidebar-link"><i class="fas fa-file-alt"></i> Exams</a></li>
+        <li><a href="assignments.html" class="sidebar-link"><i class="fas fa-tasks"></i> Assignments</a></li>
+        <li><a href="grades.html" class="sidebar-link"><i class="fas fa-star"></i> Grades</a></li>
+        <li><span class="sidebar-section-title">Monitor</span></li>
+        <li><a href="leaderboard.html" class="sidebar-link"><i class="fas fa-trophy"></i> Leaderboard</a></li>
+      <li><a href="attendance.html" class="sidebar-link"><i class="fas fa-calendar-check"></i> Attendance</a></li>
+        <li><a href="messages.html" class="sidebar-link"><i class="fas fa-comments"></i> Messages <span class="badge badge-danger" style="margin-left:auto;">3</span></a></li>
+        <li><a href="notifications.html" class="sidebar-link"><i class="fas fa-bell"></i> Notifications</a></li>
+        <li><span class="sidebar-section-title">System</span></li>
+        <li><a href="settings.html" class="sidebar-link"><i class="fas fa-cog"></i> Settings</a></li>
+        <li><a href="../login.html" class="sidebar-link" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+      </ul>
+    </nav>
+    <div class="sidebar-footer">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="user-avatar">A</div>
+        <div><p style="font-size:0.82rem;color:var(--text);font-weight:600;">Admin</p><p style="font-size:0.75rem;color:var(--text-dim);">Administrator</p></div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-left">
+        <button id="sidebarToggle" style="background:none;border:none;color:var(--text-muted);font-size:1.2rem;cursor:pointer;"><i class="fas fa-bars"></i></button>
+        <span class="topbar-title">Dashboard Overview</span>
+      </div>
+      <div class="topbar-right">
+        <span id="liveIndicator" style="display:inline-flex;align-items:center;gap:6px;font-size:0.75rem;font-family:var(--font-heading);letter-spacing:1px;color:var(--text-dim);background:rgba(255,255,255,0.04);border:1px solid var(--border);padding:5px 12px;border-radius:50px;cursor:default;">
+          <span id="liveDot" class="pulse-dot" style="background:var(--text-dim);"></span>
+          <span id="liveText">CONNECTING</span>
+        </span>
+        <span style="font-size:0.78rem;color:var(--text-muted);font-family:var(--font-heading);">
+          <i class="fas fa-users" style="color:var(--primary);margin-right:4px;"></i>
+          <span id="onlineCount">0</span> online
+        </span>
+        <button class="notif-btn" id="notifBtn" onclick="toggleNotifPanel()"><i class="fas fa-bell"></i><span class="notif-dot" id="notifDot" style="display:none;"></span></button>
+        <div class="topbar-user">
+          <div class="user-avatar" id="adminAvatar">A</div>
+          <span style="font-size:0.88rem;color:var(--text);" id="adminName">Admin</span>
+        </div>
+      </div>
+
+      <!-- Notification Panel -->
+      <div id="notifPanel" style="display:none;position:fixed;top:60px;right:20px;width:320px;background:var(--bg-card2);border:1px solid var(--border-glow);border-radius:var(--radius-lg);z-index:200;box-shadow:var(--shadow);overflow:hidden;">
+        <div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+          <h4 style="color:var(--text);font-size:0.88rem;">Live Notifications</h4>
+          <button onclick="clearNotifs()" style="background:none;border:none;color:var(--primary);font-size:0.78rem;cursor:pointer;font-family:var(--font-heading);">CLEAR ALL</button>
+        </div>
+        <div id="notifPanelList" style="max-height:360px;overflow-y:auto;"></div>
+        <div style="padding:10px 16px;border-top:1px solid var(--border);text-align:center;">
+          <a href="messages.html" style="color:var(--primary);font-size:0.82rem;">View all messages →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-content">
+      <!-- Stat Cards -->
+      <div class="stat-cards">
+        <div class="stat-card">
+          <div class="stat-card-icon icon-blue"><i class="fas fa-users"></i></div>
+          <div class="stat-card-info"><p>Total Students</p><h3>500</h3></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon icon-purple"><i class="fas fa-book-open"></i></div>
+          <div class="stat-card-info"><p>Active Courses</p><h3>9</h3></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon icon-green"><i class="fas fa-video"></i></div>
+          <div class="stat-card-info"><p>Total Lessons</p><h3>248</h3></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon icon-orange"><i class="fas fa-file-alt"></i></div>
+          <div class="stat-card-info"><p>Exams Created</p><h3>36</h3></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon icon-red"><i class="fas fa-calendar-check"></i></div>
+          <div class="stat-card-info"><p>Attendance Rate</p><h3>87%</h3></div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="card" style="margin-bottom:24px;">
+        <h3 style="color:var(--text);margin-bottom:20px;font-size:1rem;">Quick Actions</h3>
+        <div class="quick-actions">
+          <a href="lessons.html" class="quick-action"><i class="fas fa-upload" style="color:var(--primary);"></i><span>Upload Lesson</span></a>
+          <a href="students.html" class="quick-action"><i class="fas fa-user-plus" style="color:var(--success);"></i><span>Add Student</span></a>
+          <a href="exams.html" class="quick-action"><i class="fas fa-file-alt" style="color:var(--warning);"></i><span>Create Exam</span></a>
+          <a href="assignments.html" class="quick-action"><i class="fas fa-tasks" style="color:#c084fc;"></i><span>New Assignment</span></a>
+          <a href="messages.html" class="quick-action"><i class="fas fa-comments" style="color:var(--accent);"></i><span>Send Message</span></a>
+          <a href="grades.html" class="quick-action"><i class="fas fa-star" style="color:var(--warning);"></i><span>View Grades</span></a>
+        </div>
+      </div>
+
+      <!-- Charts + Activity -->
+      <div class="three-col" style="margin-bottom:24px;">
+        <div class="card">
+          <h3 style="color:var(--text);margin-bottom:20px;font-size:1rem;">Monthly Enrollment</h3>
+          <canvas id="enrollChart" height="200"></canvas>
+        </div>
+        <div class="card">
+          <h3 style="color:var(--text);margin-bottom:20px;font-size:1rem;">Recent Activity</h3>
+          <div class="activity-list" id="activityList"></div>
+        </div>
+      </div>
+
+      <!-- Student Performance + Attendance -->
+      <div class="two-col">
+        <div class="card">
+          <h3 style="color:var(--text);margin-bottom:20px;font-size:1rem;">Course Performance</h3>
+          <div style="display:flex;flex-direction:column;gap:16px;" id="performanceList"></div>
+        </div>
+        <div class="card">
+          <h3 style="color:var(--text);margin-bottom:20px;font-size:1rem;">Recent Students</h3>
+          <div class="table-wrapper">
+            <table>
+              <thead><tr><th>Student</th><th>Course</th><th>Progress</th></tr></thead>
+              <tbody id="recentStudentsTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../../js/particles.js"></script>
+<script src="../../js/app.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Auth check
+  // Auth.requireAdmin();
+
+  // Enrollment chart
+  renderBarChart('enrollChart',
+    ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug'],
+    [28,45,38,62,55,80,72,90], '#00f5ff');
+
+  // Activity feed
+  const activities = [
+    { dot: '#00ff88', text: 'New student registered: Fatima A.', time: '2m ago' },
+    { dot: '#00f5ff', text: 'Lesson uploaded: JS Async/Await', time: '18m ago' },
+    { dot: '#ffbe0b', text: 'Exam submitted: Web Security Quiz', time: '45m ago' },
+    { dot: '#ff006e', text: 'Assignment overdue: CSS Project', time: '2h ago' },
+    { dot: '#c084fc', text: 'New message from Ibrahim M.', time: '3h ago' },
+  ];
+  const list = document.getElementById('activityList');
+  activities.forEach(a => {
+    list.innerHTML += `<div class="activity-item">
+      <div class="activity-dot" style="background:${a.dot}"></div>
+      <p>${a.text}</p>
+      <span class="activity-time">${a.time}</span>
+    </div>`;
+  });
+
+  // Performance
+  const courses = [
+    { name: 'HTML & CSS', pct: 92, color: '#00f5ff' },
+    { name: 'JavaScript', pct: 78, color: '#c084fc' },
+    { name: 'Node.js', pct: 65, color: '#00ff88' },
+    { name: 'Python', pct: 71, color: '#ffbe0b' },
+    { name: 'Cybersecurity', pct: 84, color: '#ff6b35' },
+  ];
+  const perfList = document.getElementById('performanceList');
+  courses.forEach(c => {
+    perfList.innerHTML += `<div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+        <span style="font-size:0.88rem;color:var(--text);">${c.name}</span>
+        <span style="font-size:0.88rem;color:${c.color};font-weight:700;">${c.pct}%</span>
+      </div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar" style="width:${c.pct}%;background:linear-gradient(90deg,${c.color},${c.color}88);"></div>
+      </div>
+    </div>`;
+  });
+
+  // Recent students
+  const students = [
+    { name: 'Aisha M.', course: 'Frontend', progress: 72 },
+    { name: 'Ibrahim K.', course: 'Backend', progress: 45 },
+    { name: 'Fatima Z.', course: 'Security', progress: 88 },
+    { name: 'Yusuf A.', course: 'JavaScript', progress: 60 },
+    { name: 'Maryam B.', course: 'Python', progress: 33 },
+  ];
+  const tbody = document.getElementById('recentStudentsTable');
+  students.forEach(s => {
+    tbody.innerHTML += `<tr>
+      <td><div style="display:flex;align-items:center;gap:8px;"><div class="user-avatar" style="width:28px;height:28px;font-size:0.75rem;">${s.name[0]}</div>${s.name}</div></td>
+      <td><span class="badge badge-primary">${s.course}</span></td>
+      <td><div style="display:flex;align-items:center;gap:8px;"><div class="progress-bar-wrap" style="flex:1;"><div class="progress-bar" style="width:${s.progress}%;"></div></div><span style="font-size:0.8rem;color:var(--primary);white-space:nowrap;">${s.progress}%</span></div></td>
+    </tr>`;
+  });
+
+  // ── Admin info ─────────────────────────────────────────────────
+  const admin = Auth.getAdmin() || { name: 'Admin', email: '' };
+  const adminInitials = (admin.name||'A').split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('adminAvatar').textContent = adminInitials;
+  document.getElementById('adminName').textContent   = admin.name || 'Admin';
+  document.getElementById('logoutBtn').addEventListener('click', () => Auth.logoutAdmin());
+
+  // ── Live activity feed state ────────────────────────────────────
+  let onlineUsers   = new Set();
+  let notifCount    = 0;
+  const notifStore  = [];
+
+  // ── Push item to activity feed ──────────────────────────────────
+  function pushActivity(dot, text, time, urgent) {
+    const list = document.getElementById('activityList');
+    if (!list) return;
+    const div = document.createElement('div');
+    div.className = 'activity-item';
+    if (urgent) div.style.animation = 'slideIn 0.3s ease';
+    div.innerHTML = `
+      <div class="activity-dot" style="background:${dot};${urgent?'box-shadow:0 0 8px '+dot:''}"></div>
+      <p style="color:var(--text);">${text}</p>
+      <span class="activity-time">${time || 'Just now'}</span>`;
+    list.prepend(div);
+    // Keep max 10 items
+    while (list.children.length > 10) list.removeChild(list.lastChild);
+  }
+
+  // ── Push to notification panel ──────────────────────────────────
+  function pushNotif(icon, color, title, body, link) {
+    notifCount++;
+    notifStore.unshift({ icon, color, title, body, link, time: new Date() });
+    document.getElementById('notifDot').style.display = 'block';
+    renderNotifPanel();
+    showToast(`${icon} ${title}`, 'info', 4000);
+  }
+
+  function renderNotifPanel() {
+    const el = document.getElementById('notifPanelList');
+    if (!el) return;
+    if (!notifStore.length) {
+      el.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-dim);font-size:0.85rem;">No new notifications</div>';
+      return;
+    }
+    el.innerHTML = notifStore.slice(0,15).map(n => `
+      <div style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.04);display:flex;gap:10px;align-items:flex-start;cursor:pointer;"
+           onclick="window.location.href='${n.link||'#'}'">
+        <span style="font-size:1.1rem;">${n.icon}</span>
+        <div style="flex:1;">
+          <p style="font-size:0.85rem;color:var(--text);">${n.title}</p>
+          ${n.body ? `<p style="font-size:0.78rem;margin-top:2px;">${n.body}</p>` : ''}
+          <span style="font-size:0.72rem;color:var(--text-dim);">${timeAgo(n.time)}</span>
+        </div>
+      </div>`).join('');
+  }
+
+  function clearNotifs() {
+    notifStore.length = 0; notifCount = 0;
+    document.getElementById('notifDot').style.display = 'none';
+    renderNotifPanel();
+  }
+  window.clearNotifs = clearNotifs;
+
+  function toggleNotifPanel() {
+    const panel = document.getElementById('notifPanel');
+    panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+    if (panel.style.display === 'block') { notifCount = 0; document.getElementById('notifDot').style.display = 'none'; }
+  }
+  window.toggleNotifPanel = toggleNotifPanel;
+
+  // Close panel when clicking outside
+  document.addEventListener('click', (e) => {
+    const panel = document.getElementById('notifPanel');
+    const btn   = document.getElementById('notifBtn');
+    if (panel && !panel.contains(e.target) && !btn.contains(e.target)) {
+      panel.style.display = 'none';
+    }
+  });
+
+  function timeAgo(date) {
+    const diff = Date.now() - new Date(date).getTime();
+    const m = Math.floor(diff/60000);
+    if (m < 1) return 'Just now';
+    if (m < 60) return `${m}m ago`;
+    return `${Math.floor(m/60)}h ago`;
+  }
+
+  // ── Poll real attendance data from API every 30s ───────────────
+  async function pollLiveData() {
+    const token = localStorage.getItem('cb_token');
+    if (!token) return;
+    try {
+      const res  = await fetch('/api/attendance/today', {
+        headers: { 'Authorization': 'Bearer ' + token }
+      });
+      const data = await res.json();
+      if (data.success && data.stats) {
+        // Update stat cards dynamically
+        const presentEl = document.querySelector('[data-live="present"]');
+        const absentEl  = document.querySelector('[data-live="absent"]');
+        if (presentEl) presentEl.textContent = data.stats.present || 0;
+        if (absentEl)  absentEl.textContent  = data.stats.absent  || 0;
+      }
+    } catch (e) {}
+  }
+  pollLiveData();
+  setInterval(pollLiveData, 30000);
+
+  // ── Socket.io real-time connection ─────────────────────────────
+  const sioScript = document.createElement('script');
+  sioScript.src = 'https://cdn.socket.io/4.7.5/socket.io.min.js';
+  sioScript.onload = function() {
+    const token = localStorage.getItem('cb_token');
+    if (!token) return;
+
+    const socket = io(window.location.origin, {
+      auth: { token },
+      reconnection: true,
+      reconnectionDelay: 2000,
+      transports: ['websocket', 'polling']
+    });
+
+    // ── Connection state ──────────────────────────────────────────
+    function setLiveStatus(status) {
+      const dot  = document.getElementById('liveDot');
+      const text = document.getElementById('liveText');
+      const ind  = document.getElementById('liveIndicator');
+      const cfg  = {
+        connected:    { color:'var(--success)', label:'LIVE', border:'rgba(0,255,136,0.4)' },
+        disconnected: { color:'var(--danger)',  label:'OFFLINE', border:'rgba(255,0,110,0.3)' },
+        connecting:   { color:'var(--warning)', label:'CONNECTING...', border:'var(--border)' },
+      }[status];
+      if (!cfg) return;
+      dot.style.background  = cfg.color;
+      text.textContent      = cfg.label;
+      text.style.color      = cfg.color;
+      ind.style.borderColor = cfg.border;
+    }
+
+    socket.on('connect', () => {
+      setLiveStatus('connected');
+      pushActivity('var(--success)', '🔌 Admin dashboard connected — real-time monitoring active', 'Just now', false);
+    });
+    socket.on('disconnect', () => {
+      setLiveStatus('disconnected');
+      pushActivity('var(--danger)', '⚠️ Connection lost — attempting to reconnect...', 'Just now', true);
+    });
+    socket.on('connect_error', () => setLiveStatus('connecting'));
+    socket.io.on('reconnect', () => {
+      setLiveStatus('connected');
+      pushActivity('var(--success)', '✅ Reconnected to live monitoring', 'Just now', false);
+    });
+
+    // ── Online user tracking ──────────────────────────────────────
+    socket.on('user:online', ({ userId, online }) => {
+      if (online) onlineUsers.add(userId); else onlineUsers.delete(userId);
+      document.getElementById('onlineCount').textContent = onlineUsers.size;
+    });
+
+    // ── Live attendance updates ───────────────────────────────────
+    socket.on('attendance:update', (data) => {
+      const pct   = data.watchPct || data.watchPercent || 0;
+      const color = pct >= 80 ? 'var(--success)' : pct >= 30 ? 'var(--warning)' : 'var(--danger)';
+      const emoji = pct >= 80 ? '✅' : pct >= 30 ? '⏳' : '👁️';
+      pushActivity(color,
+        `${emoji} Student watching lesson — <strong>${pct}%</strong> watched`,
+        'Just now', pct >= 80);
+
+      // Flash the stat card for present count
+      if (pct >= 80) {
+        const el = document.querySelector('[data-live="present"]');
+        if (el) { el.style.color='var(--success)'; setTimeout(()=>el.style.color='',1000); }
+      }
+    });
+
+    // ── Live check-in ─────────────────────────────────────────────
+    socket.on('attendance:checkin', (data) => {
+      const emoji = data.status === 'present' ? '🟢' : data.status === 'late' ? '🟡' : '🔴';
+      pushActivity(
+        data.status === 'present' ? 'var(--success)' : 'var(--warning)',
+        `${emoji} <strong>${data.studentName || 'Student'}</strong> checked in — ${data.status}`,
+        'Just now', true
+      );
+      pushNotif(emoji, 'var(--success)',
+        `${data.studentName || 'Student'} checked in`,
+        `Status: ${data.status}`,
+        'attendance.html'
+      );
+    });
+
+    // ── Lesson progress (real-time from students) ─────────────────
+    socket.on('student:lesson:progress', (data) => {
+      const pct = data.progress || 0;
+      if (pct % 25 === 0 && pct > 0) {
+        // Only show at 25%, 50%, 75%, 100% to avoid flooding
+        pushActivity('var(--primary)',
+          `📹 Student reached <strong>${pct}%</strong> of lesson`,
+          'Just now', false);
+      }
+    });
+
+    // ── Incoming messages ─────────────────────────────────────────
+    socket.on('message:receive', (msg) => {
+      const name = msg.sender?.firstName || 'Student';
+      pushActivity('var(--primary)',
+        `💬 New message from <strong>${name}</strong>: "${(msg.content||'').substring(0,40)}..."`,
+        'Just now', true);
+      pushNotif('💬', 'var(--primary)',
+        `Message from ${name}`,
+        (msg.content||'').substring(0, 60),
+        'messages.html'
+      );
+    });
+
+    // ── Broadcast notifications ───────────────────────────────────
+    socket.on('notification:new', (notif) => {
+      const icons = { lesson:'📹', exam:'📝', assignment:'📋', announcement:'📢', message:'💬', grade:'⭐' };
+      pushActivity('var(--primary)',
+        `${icons[notif.type]||'🔔'} ${notif.title}`,
+        'Just now', false);
+    });
+
+    // ── Expose broadcast function to admin UI ─────────────────────
+    window.adminBroadcast = function(title, body, type) {
+      socket.emit('admin:broadcast', { title, body, type: type||'announcement' });
+      pushActivity('var(--warning)',
+        `📢 Broadcast sent: "${title}"`,
+        'Just now', false);
+      showToast('📢 Announcement broadcast to all students!', 'success');
+    };
+  };
+  document.head.appendChild(sioScript);
+
+  // ── Add live data attributes to stat cards ──────────────────────
+  // (so pollLiveData can update them)
+  const statCards = document.querySelectorAll('.stat-card-info h3');
+  if (statCards[3]) statCards[3].setAttribute('data-live','present');  // Attendance rate card
+
+  // ── Add CSS animation for new items ────────────────────────────
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes slideIn { from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:translateY(0)} }
+    #activityList .activity-item { animation: slideIn 0.3s ease; }
+    #notifPanel { animation: slideIn 0.2s ease; }
+  `;
+  document.head.appendChild(style);
+});
+</script>
+</body>
+</html>

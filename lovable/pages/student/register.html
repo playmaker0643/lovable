@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Register | CodeBreakers</title>
+  <link rel="stylesheet" href="../../css/style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    body{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px;}
+    .reg-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:44px 40px;width:100%;max-width:560px;position:relative;z-index:1;}
+    .reg-number-box{background:rgba(0,245,255,0.06);border:1px solid var(--border-glow);border-radius:var(--radius);padding:16px;text-align:center;margin-bottom:24px;}
+    .reg-number{font-family:var(--font-mono);font-size:1.4rem;color:var(--primary);letter-spacing:3px;font-weight:700;}
+    .step-indicator{display:flex;align-items:center;gap:0;margin-bottom:32px;}
+    .step{display:flex;align-items:center;gap:8px;flex:1;}
+    .step-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.78rem;font-weight:700;font-family:var(--font-heading);flex-shrink:0;}
+    .step.active .step-num{background:var(--primary);color:#000;}
+    .step.done .step-num{background:var(--success);color:#000;}
+    .step.inactive .step-num{background:rgba(255,255,255,0.06);color:var(--text-muted);border:1px solid var(--border);}
+    .step-line{flex:1;height:2px;background:var(--border);}
+    .step.done+.step-line,.step.active+.step-line{background:var(--primary);}
+    .step-label{font-size:0.72rem;color:var(--text-muted);font-family:var(--font-heading);letter-spacing:0.5px;}
+    .form-step{display:none;}.form-step.active{display:block;}
+    .show-pw{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-muted);cursor:pointer;}
+    .input-wrap{position:relative;}
+  </style>
+</head>
+<body>
+<canvas id="particles-canvas"></canvas>
+<div class="reg-card">
+  <div style="text-align:center;margin-bottom:28px;">
+    <div class="logo-icon" style="width:52px;height:52px;background:linear-gradient(135deg,var(--primary),var(--secondary));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:#000;margin:0 auto 12px;"><i class="fas fa-code"></i></div>
+    <h2 style="color:var(--text);">Create Account</h2>
+    <p style="font-size:0.88rem;">Join CodeBreakers and start your learning journey</p>
+  </div>
+
+  <!-- Step indicator -->
+  <div class="step-indicator">
+    <div class="step active" id="step1-ind"><div class="step-num">1</div><span class="step-label">Personal</span></div>
+    <div class="step-line"></div>
+    <div class="step inactive" id="step2-ind"><div class="step-num">2</div><span class="step-label">Account</span></div>
+    <div class="step-line"></div>
+    <div class="step inactive" id="step3-ind"><div class="step-num">3</div><span class="step-label">Confirm</span></div>
+  </div>
+
+  <div id="regAlert"></div>
+
+  <!-- Step 1: Personal Info -->
+  <div class="form-step active" id="formStep1">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div class="form-group"><label>First Name</label><input type="text" class="form-control" id="firstName" placeholder="Fatima" required/></div>
+      <div class="form-group"><label>Last Name</label><input type="text" class="form-control" id="lastName" placeholder="Ahmed" required/></div>
+    </div>
+    <div class="form-group"><label>Phone Number</label><input type="tel" class="form-control" id="phone" placeholder="+234 800 000 0000"/></div>
+    <div class="form-group"><label>Date of Birth</label><input type="date" class="form-control" id="dob"/></div>
+    <div class="form-group"><label>Course of Interest</label>
+      <select class="form-control" id="course" required>
+        <option value="">Select your course...</option>
+        <option>Frontend Development</option>
+        <option>Backend Development</option>
+        <option>Cybersecurity & Ethical Hacking</option>
+        <option>Full Stack Development</option>
+      </select>
+    </div>
+    <button class="btn btn-primary btn-block" onclick="goToStep(2)">Next Step <i class="fas fa-arrow-right"></i></button>
+  </div>
+
+  <!-- Step 2: Account Details -->
+  <div class="form-step" id="formStep2">
+    <div class="form-group"><label>Email Address</label><input type="email" class="form-control" id="email" placeholder="fatima@email.com" required/></div>
+    <div class="form-group"><label>Create Password</label>
+      <div class="input-wrap">
+        <input type="password" class="form-control" id="password" placeholder="Min 8 characters" required style="padding-right:44px;"/>
+        <button type="button" class="show-pw" onclick="togglePw('password',this)"><i class="fas fa-eye"></i></button>
+      </div>
+    </div>
+    <div class="form-group"><label>Confirm Password</label>
+      <div class="input-wrap">
+        <input type="password" class="form-control" id="confirmPassword" placeholder="Re-enter password" required style="padding-right:44px;"/>
+        <button type="button" class="show-pw" onclick="togglePw('confirmPassword',this)"><i class="fas fa-eye"></i></button>
+      </div>
+    </div>
+    <div class="form-group">
+      <div id="pwStrength" style="margin-top:8px;"></div>
+    </div>
+    <div style="display:flex;gap:12px;">
+      <button class="btn btn-ghost" onclick="goToStep(1)"><i class="fas fa-arrow-left"></i> Back</button>
+      <button class="btn btn-primary" style="flex:1;" onclick="goToStep(3)">Next Step <i class="fas fa-arrow-right"></i></button>
+    </div>
+  </div>
+
+  <!-- Step 3: Confirm -->
+  <div class="form-step" id="formStep3">
+    <div class="reg-number-box">
+      <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:8px;">Your Auto-Generated Registration Number</p>
+      <div class="reg-number" id="generatedRegNo">CB-2026-XXXXX</div>
+      <p style="font-size:0.75rem;color:var(--text-dim);margin-top:6px;">Save this number — you'll need it to log in</p>
+    </div>
+    <div id="summaryBox" class="card" style="margin-bottom:20px;"></div>
+    <div class="form-group">
+      <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:0.88rem;color:var(--text-muted);">
+        <input type="checkbox" id="agreeTerms" style="accent-color:var(--primary);margin-top:3px;"/>
+        I agree to the <a href="../privacy.html" style="color:var(--primary);">Privacy Policy</a> and Terms of Service
+      </label>
+    </div>
+    <div style="display:flex;gap:12px;">
+      <button class="btn btn-ghost" onclick="goToStep(2)"><i class="fas fa-arrow-left"></i> Back</button>
+      <button class="btn btn-primary" style="flex:1;" onclick="submitRegistration()"><i class="fas fa-user-plus"></i> Create Account</button>
+    </div>
+  </div>
+
+  <div style="text-align:center;margin-top:20px;padding-top:16px;border-top:1px solid var(--border);">
+    <p style="font-size:0.88rem;">Already have an account? <a href="../login.html" style="color:var(--primary);font-weight:700;">Sign In</a></p>
+  </div>
+</div>
+<script src="../../js/particles.js"></script>
+<script src="../../js/app.js"></script>
+<script>
+function togglePw(id, btn) {
+  const input = document.getElementById(id);
+  input.type = input.type === 'text' ? 'password' : 'text';
+  btn.innerHTML = input.type === 'text' ? '<i class="fas fa-eye-slash"></i>' : '<i class="fas fa-eye"></i>';
+}
+
+document.getElementById('password')?.addEventListener('input', function() {
+  const v = this.value;
+  const strength = v.length >= 12 && /[A-Z]/.test(v) && /[0-9]/.test(v) && /[^a-zA-Z0-9]/.test(v) ? 'Strong' :
+                   v.length >= 8 && (/[A-Z]/.test(v) || /[0-9]/.test(v)) ? 'Medium' : 'Weak';
+  const colors = { Strong: 'var(--success)', Medium: 'var(--warning)', Weak: 'var(--danger)' };
+  document.getElementById('pwStrength').innerHTML = `<span style="font-size:0.82rem;color:${colors[strength]};"><i class="fas fa-shield-alt"></i> Password Strength: ${strength}</span>`;
+});
+
+function goToStep(step) {
+  const alert = document.getElementById('regAlert');
+  if (step === 2) {
+    if (!document.getElementById('firstName').value || !document.getElementById('course').value) {
+      alert.innerHTML = '<div class="alert alert-danger"><i class="fas fa-times-circle"></i> Please fill all required fields.</div>';
+      return;
+    }
+  }
+  if (step === 3) {
+    const pw = document.getElementById('password').value;
+    const cpw = document.getElementById('confirmPassword').value;
+    if (!document.getElementById('email').value || !pw) {
+      alert.innerHTML = '<div class="alert alert-danger"><i class="fas fa-times-circle"></i> Please fill all fields.</div>';
+      return;
+    }
+    if (pw !== cpw) {
+      alert.innerHTML = '<div class="alert alert-danger"><i class="fas fa-times-circle"></i> Passwords do not match.</div>';
+      return;
+    }
+    // Generate reg no
+    const regNo = generateStudentID();
+    document.getElementById('generatedRegNo').textContent = regNo;
+    const fn = document.getElementById('firstName').value;
+    const ln = document.getElementById('lastName').value;
+    const course = document.getElementById('course').value;
+    const email = document.getElementById('email').value;
+    document.getElementById('summaryBox').innerHTML = `
+      <p style="font-size:0.85rem;margin-bottom:6px;"><strong style="color:var(--text);">Name:</strong> ${fn} ${ln}</p>
+      <p style="font-size:0.85rem;margin-bottom:6px;"><strong style="color:var(--text);">Email:</strong> ${email}</p>
+      <p style="font-size:0.85rem;"><strong style="color:var(--text);">Course:</strong> ${course}</p>`;
+  }
+  alert.innerHTML = '';
+  document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+  document.getElementById('formStep' + step).classList.add('active');
+  ['step1-ind','step2-ind','step3-ind'].forEach((id, i) => {
+    const el = document.getElementById(id);
+    el.className = 'step ' + (i + 1 < step ? 'done' : i + 1 === step ? 'active' : 'inactive');
+  });
+}
+
+async function submitRegistration() {
+  if (!document.getElementById('agreeTerms').checked) {
+    document.getElementById('regAlert').innerHTML = '<div class="alert alert-danger"><i class="fas fa-times-circle"></i> Please agree to the Privacy Policy.</div>';
+    return;
+  }
+
+  const submitBtn = document.querySelector('#formStep3 .btn-primary');
+  submitBtn.disabled = true;
+  submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating account…';
+
+  const payload = {
+    firstName: document.getElementById('firstName').value.trim(),
+    lastName:  document.getElementById('lastName').value.trim(),
+    email:     document.getElementById('email').value.trim(),
+    password:  document.getElementById('password').value,
+    phone:     document.getElementById('phone').value.trim(),
+    dob:       document.getElementById('dob').value,
+    course:    document.getElementById('course').value,
+  };
+
+  try {
+    const res  = await fetch('/api/auth/register', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(payload)
+    });
+    const data = await res.json();
+
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = '<i class="fas fa-user-plus"></i> Create Account';
+
+    if (!res.ok) {
+      document.getElementById('regAlert').innerHTML =
+        `<div class="alert alert-danger"><i class="fas fa-times-circle"></i> ${data.message || 'Registration failed.'}</div>`;
+      return;
+    }
+
+    // Show the real auto-generated registration number from the server
+    document.getElementById('generatedRegNo').textContent = data.user.registrationNumber;
+
+    // Store token & user
+    localStorage.setItem('cb_token', data.token);
+    Auth.loginStudent({
+      name:   data.user.fullName,
+      email:  data.user.email,
+      regNo:  data.user.registrationNumber,
+      course: data.user.course,
+      id:     data.user.id,
+    });
+
+    document.getElementById('regAlert').innerHTML =
+      `<div class="alert alert-success"><i class="fas fa-check-circle"></i> Account created! Your registration number is <strong>${data.user.registrationNumber}</strong>. Redirecting…</div>`;
+    setTimeout(() => window.location.href = 'dashboard.html', 2000);
+  } catch (err) {
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = '<i class="fas fa-user-plus"></i> Create Account';
+    document.getElementById('regAlert').innerHTML =
+      '<div class="alert alert-danger"><i class="fas fa-times-circle"></i> Cannot connect to server. Please try again.</div>';
+  }
+}
+</script>
+</body>
+</html>

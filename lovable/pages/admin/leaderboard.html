@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Leaderboard | Admin | CodeBreakers</title>
+  <link rel="stylesheet" href="../../css/style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    .podium{display:flex;align-items:flex-end;justify-content:center;gap:0;margin:32px auto 48px;max-width:560px;}
+    .podium-place{display:flex;flex-direction:column;align-items:center;flex:1;}
+    .podium-avatar{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-family:var(--font-heading);color:#000;position:relative;margin-bottom:10px;}
+    .podium-avatar .crown{position:absolute;top:-22px;font-size:1.3rem;}
+    .podium-name{font-size:0.8rem;color:var(--text);font-weight:700;text-align:center;margin-bottom:4px;}
+    .podium-score{font-family:var(--font-heading);font-size:0.95rem;font-weight:900;margin-bottom:6px;}
+    .podium-bar{width:100%;border-radius:8px 8px 0 0;display:flex;align-items:center;justify-content:center;font-family:var(--font-heading);font-size:1.3rem;font-weight:900;}
+    .podium-bar.first{background:linear-gradient(180deg,#ffd700,#b8860b);height:130px;color:#000;}
+    .podium-bar.second{background:linear-gradient(180deg,#c0c0c0,#808080);height:95px;color:#000;}
+    .podium-bar.third{background:linear-gradient(180deg,#cd7f32,#8b4513);height:65px;color:#fff;}
+    .lb-row{display:grid;grid-template-columns:52px 1.4fr 90px 90px 90px 90px 80px;align-items:center;gap:10px;padding:12px 18px;border-bottom:1px solid rgba(255,255,255,0.04);transition:var(--transition);}
+    .lb-row:hover{background:rgba(0,245,255,0.03);}
+    .lb-header{background:rgba(0,245,255,0.05);border-radius:var(--radius) var(--radius) 0 0;font-family:var(--font-heading);font-size:0.72rem;letter-spacing:1px;color:var(--primary);padding:10px 18px;}
+    .rank-badge{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-heading);font-size:0.8rem;font-weight:700;flex-shrink:0;}
+    .rank-1{background:linear-gradient(135deg,#ffd700,#b8860b);color:#000;box-shadow:0 0 12px rgba(255,215,0,0.5);}
+    .rank-2{background:linear-gradient(135deg,#c0c0c0,#808080);color:#000;}
+    .rank-3{background:linear-gradient(135deg,#cd7f32,#8b4513);color:#fff;}
+    .rank-n{background:rgba(255,255,255,0.06);color:var(--text-muted);border:1px solid var(--border);}
+    .lb-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.78rem;flex-shrink:0;}
+    .metric{text-align:center;}
+    .metric .val{font-family:var(--font-heading);font-size:0.9rem;font-weight:700;display:block;}
+    .metric .lbl{font-size:0.65rem;color:var(--text-dim);letter-spacing:0.5px;text-transform:uppercase;}
+    .mini-bar{height:4px;border-radius:2px;background:rgba(255,255,255,0.06);margin-top:3px;overflow:hidden;}
+    .mini-fill{height:100%;border-radius:2px;}
+    .filter-chip{padding:6px 16px;border-radius:50px;border:1px solid var(--border);background:transparent;color:var(--text-muted);font-family:var(--font-heading);font-size:0.75rem;letter-spacing:1px;cursor:pointer;transition:var(--transition);}
+    .filter-chip.active,.filter-chip:hover{background:rgba(0,245,255,0.1);border-color:var(--border-glow);color:var(--primary);}
+    .summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px;}
+    .summary-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;text-align:center;}
+    .summary-card .num{font-family:var(--font-heading);font-size:1.8rem;font-weight:900;}
+    .summary-card p{font-size:0.78rem;margin-top:4px;}
+    .trend{font-size:0.75rem;padding:3px 8px;border-radius:50px;}
+    .trend.up{background:rgba(0,255,136,0.1);color:var(--success);}
+    .trend.down{background:rgba(255,0,110,0.1);color:var(--danger);}
+  </style>
+</head>
+<body>
+<canvas id="particles-canvas"></canvas>
+<div class="app-layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header"><div class="nav-logo"><div class="logo-icon"><i class="fas fa-code"></i></div><span class="logo-text">Code<span class="accent">Breakers</span></span></div></div>
+    <nav class="sidebar-nav"><ul>
+      <li><span class="sidebar-section-title">Main</span></li>
+      <li><a href="dashboard.html" class="sidebar-link"><i class="fas fa-th-large"></i> Dashboard</a></li>
+      <li><a href="students.html" class="sidebar-link"><i class="fas fa-users"></i> Students</a></li>
+      <li><a href="courses.html" class="sidebar-link"><i class="fas fa-book"></i> Courses</a></li>
+      <li><a href="lessons.html" class="sidebar-link"><i class="fas fa-video"></i> Lessons</a></li>
+      <li><span class="sidebar-section-title">Assessments</span></li>
+      <li><a href="exams.html" class="sidebar-link"><i class="fas fa-file-alt"></i> Exams</a></li>
+      <li><a href="assignments.html" class="sidebar-link"><i class="fas fa-tasks"></i> Assignments</a></li>
+      <li><a href="grades.html" class="sidebar-link"><i class="fas fa-star"></i> Grades</a></li>
+      <li><span class="sidebar-section-title">Monitor</span></li>
+      <li><a href="attendance.html" class="sidebar-link"><i class="fas fa-calendar-check"></i> Attendance</a></li>
+      <li><a href="leaderboard.html" class="sidebar-link active"><i class="fas fa-trophy"></i> Leaderboard</a></li>
+      <li><a href="messages.html" class="sidebar-link"><i class="fas fa-comments"></i> Messages</a></li>
+      <li><span class="sidebar-section-title">System</span></li>
+      <li><a href="../login.html" class="sidebar-link"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+    </ul></nav>
+  </aside>
+
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-left">
+        <button id="sidebarToggle" style="background:none;border:none;color:var(--text-muted);font-size:1.2rem;cursor:pointer;"><i class="fas fa-bars"></i></button>
+        <span class="topbar-title">🏆 Student Leaderboard</span>
+      </div>
+      <div class="topbar-right">
+        <span id="lastUpdated" style="font-size:0.78rem;color:var(--text-dim);font-family:var(--font-mono);"></span>
+        <button class="btn btn-outline btn-sm" onclick="loadLeaderboard()"><i class="fas fa-sync-alt"></i> Refresh</button>
+        <button class="btn btn-primary btn-sm" onclick="exportCSV()"><i class="fas fa-download"></i> Export CSV</button>
+      </div>
+    </div>
+
+    <div class="page-content">
+      <!-- Summary Cards -->
+      <div class="summary-grid" id="summaryGrid">
+        <div class="summary-card"><div class="num" id="sumAvgScore" style="color:var(--primary);">—</div><p>Class Average Score</p></div>
+        <div class="summary-card"><div class="num" id="sumTopScore" style="color:var(--success);">—</div><p>Top Score</p></div>
+        <div class="summary-card"><div class="num" id="sumAvgAtt" style="color:var(--warning);">—</div><p>Avg. Attendance</p></div>
+        <div class="summary-card"><div class="num" id="sumAvgLessons" style="color:var(--accent);">—</div><p>Avg. Lessons Done</p></div>
+        <div class="summary-card"><div class="num" id="sumTotal" style="color:var(--primary);">—</div><p>Total Students Ranked</p></div>
+      </div>
+
+      <!-- Filters -->
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:24px;">
+        <span style="font-size:0.78rem;color:var(--text-muted);font-family:var(--font-heading);">COURSE:</span>
+        <button class="filter-chip active" onclick="setFilter('all',this)">🌐 All</button>
+        <button class="filter-chip" onclick="setFilter('Frontend Development',this)">💻 Frontend</button>
+        <button class="filter-chip" onclick="setFilter('Backend Development',this)">🖥️ Backend</button>
+        <button class="filter-chip" onclick="setFilter('Cybersecurity & Ethical Hacking',this)">🛡️ Security</button>
+        <span style="margin-left:auto;font-size:0.78rem;color:var(--text-muted);font-family:var(--font-heading);">PERIOD:</span>
+        <button class="filter-chip active" onclick="setPeriod('all',this)">All Time</button>
+        <button class="filter-chip" onclick="setPeriod('month',this)">This Month</button>
+        <button class="filter-chip" onclick="setPeriod('week',this)">This Week</button>
+      </div>
+
+      <!-- Podium -->
+      <div class="podium" id="podium"></div>
+
+      <!-- Table -->
+      <div class="card" style="padding:0;overflow:hidden;">
+        <div class="lb-row lb-header">
+          <span>Rank</span>
+          <span>Student</span>
+          <span class="metric" style="text-align:center;">Score</span>
+          <span class="metric" style="text-align:center;">Grade</span>
+          <span class="metric" style="text-align:center;">Attendance</span>
+          <span class="metric" style="text-align:center;">Lessons</span>
+          <span style="text-align:center;">Actions</span>
+        </div>
+        <div id="leaderboardList">
+          <div style="padding:40px;text-align:center;"><i class="fas fa-spinner fa-spin" style="color:var(--primary);font-size:1.5rem;"></i></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../../js/particles.js"></script>
+<script src="../../js/app.js"></script>
+<script>
+let allData = [], currentFilter = 'all', currentPeriod = 'all';
+
+const demoData = [
+  { rank:1, name:'Umar Saleh',      regNo:'CB-2026-10006', course:'Cybersecurity & Ethical Hacking', avgGrade:97, attRate:98, lessonsCompleted:24, compositeScore:98, grade:'A+', gradeColor:'#00ff88', badge:'🥇' },
+  { rank:2, name:'Fatima Zahra',    regNo:'CB-2026-10003', course:'Cybersecurity & Ethical Hacking', avgGrade:92, attRate:95, lessonsCompleted:22, compositeScore:94, grade:'A+', gradeColor:'#00ff88', badge:'🥈' },
+  { rank:3, name:'Hassan Musa',     regNo:'CB-2026-10008', course:'Backend Development',             avgGrade:83, attRate:91, lessonsCompleted:20, compositeScore:88, grade:'A',  gradeColor:'#00f5ff', badge:'🥉' },
+  { rank:4, name:'Aisha Mohammed',  regNo:'CB-2026-10001', course:'Frontend Development',           avgGrade:84, attRate:88, lessonsCompleted:18, compositeScore:85, grade:'A',  gradeColor:'#00f5ff', badge:null },
+  { rank:5, name:'Khadijah Sule',   regNo:'CB-2026-10007', course:'Frontend Development',           avgGrade:78, attRate:79, lessonsCompleted:16, compositeScore:79, grade:'B',  gradeColor:'#c084fc', badge:null },
+  { rank:6, name:'Yusuf Adamu',     regNo:'CB-2026-10004', course:'Frontend Development',           avgGrade:71, attRate:82, lessonsCompleted:15, compositeScore:76, grade:'B',  gradeColor:'#c084fc', badge:null },
+  { rank:7, name:'Ibrahim Khalil',  regNo:'CB-2026-10002', course:'Backend Development',            avgGrade:65, attRate:75, lessonsCompleted:12, compositeScore:70, grade:'C',  gradeColor:'#ffbe0b', badge:null },
+  { rank:8, name:'Zainab Idris',    regNo:'CB-2026-10009', course:'Cybersecurity & Ethical Hacking',avgGrade:62, attRate:72, lessonsCompleted:10, compositeScore:67, grade:'C',  gradeColor:'#ffbe0b', badge:null },
+  { rank:9, name:'Abdullahi Garba', regNo:'CB-2026-10010', course:'Frontend Development',           avgGrade:67, attRate:85, lessonsCompleted:11, compositeScore:72, grade:'C',  gradeColor:'#ffbe0b', badge:null },
+  { rank:10,name:'Maryam Bashir',   regNo:'CB-2026-10005', course:'Backend Development',            avgGrade:55, attRate:68, lessonsCompleted:8,  compositeScore:60, grade:'F',  gradeColor:'#ff006e', badge:null },
+];
+
+function setFilter(val, btn) {
+  currentFilter = val;
+  document.querySelectorAll('.filter-chip').forEach(b => {
+    const v = b.getAttribute('onclick')?.match(/'([^']+)'/)?.[1];
+    if (['all','Frontend Development','Backend Development','Cybersecurity & Ethical Hacking'].includes(v)) b.classList.remove('active');
+  });
+  btn.classList.add('active');
+  renderLeaderboard();
+}
+function setPeriod(val, btn) {
+  currentPeriod = val;
+  document.querySelectorAll('.filter-chip').forEach(b => {
+    const v = b.getAttribute('onclick')?.match(/'([^']+)'/)?.[1];
+    if (['all','month','week'].includes(v)) b.classList.remove('active');
+  });
+  btn.classList.add('active');
+  loadLeaderboard();
+}
+
+async function loadLeaderboard() {
+  document.getElementById('leaderboardList').innerHTML =
+    '<div style="padding:40px;text-align:center;"><i class="fas fa-spinner fa-spin" style="color:var(--primary);font-size:1.5rem;"></i></div>';
+  const token = localStorage.getItem('cb_token');
+  if (token) {
+    try {
+      const params = new URLSearchParams({ period: currentPeriod, limit: 100 });
+      if (currentFilter !== 'all') params.set('course', currentFilter);
+      const res  = await fetch(`/api/leaderboard?${params}`, { headers: { 'Authorization': 'Bearer ' + token } });
+      const data = await res.json();
+      if (res.ok && data.success && data.data?.length > 0) {
+        allData = data.data.map(s => ({ ...s, regNo: s.registrationNumber }));
+        renderLeaderboard();
+        document.getElementById('lastUpdated').textContent = 'Updated: ' + new Date().toLocaleTimeString();
+        return;
+      }
+    } catch (e) {}
+  }
+  allData = demoData;
+  renderLeaderboard();
+  document.getElementById('lastUpdated').textContent = 'Demo data — ' + new Date().toLocaleTimeString();
+}
+
+function renderLeaderboard() {
+  const filtered = currentFilter === 'all' ? allData : allData.filter(s => s.course === currentFilter);
+  const sorted   = [...filtered].sort((a,b) => b.compositeScore - a.compositeScore)
+    .map((s,i) => ({ ...s, rank:i+1, badge:i===0?'🥇':i===1?'🥈':i===2?'🥉':null }));
+
+  // Summary stats
+  if (sorted.length) {
+    const avg = v => Math.round(sorted.reduce((s,r) => s+r[v], 0) / sorted.length);
+    document.getElementById('sumAvgScore').textContent   = avg('compositeScore') + '%';
+    document.getElementById('sumTopScore').textContent   = sorted[0].compositeScore + '%';
+    document.getElementById('sumAvgAtt').textContent     = avg('attRate') + '%';
+    document.getElementById('sumAvgLessons').textContent = avg('lessonsCompleted');
+    document.getElementById('sumTotal').textContent      = sorted.length;
+  }
+
+  renderPodium(sorted.slice(0,3));
+  renderTable(sorted);
+}
+
+function renderPodium(top3) {
+  if (top3.length < 2) { document.getElementById('podium').innerHTML = ''; return; }
+  const order  = [top3[1], top3[0], top3[2]].filter(Boolean);
+  const sizes  = [80, 100, 65];
+  const bars   = ['second','first','third'];
+  const crowns = ['','👑',''];
+  document.getElementById('podium').innerHTML = order.map((s,i) => {
+    const init = s.name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
+    const bg   = i===1?'linear-gradient(135deg,#ffd700,#b8860b)':i===0?'linear-gradient(135deg,#c0c0c0,#808080)':'linear-gradient(135deg,#cd7f32,#8b4513)';
+    const tc   = i===2?'#fff':'#000';
+    return `<div class="podium-place">
+      <div class="podium-avatar" style="width:${sizes[i]}px;height:${sizes[i]}px;background:${bg};font-size:${sizes[i]*0.32}px;color:${tc};">
+        ${crowns[i]?`<span class="crown">${crowns[i]}</span>`:''}${init}
+      </div>
+      <div class="podium-name">${s.name.split(' ')[0]}</div>
+      <div class="podium-score" style="color:${s.gradeColor};">${s.compositeScore}%</div>
+      <div class="podium-bar ${bars[i]}">${s.badge}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderTable(data) {
+  if (!data.length) {
+    document.getElementById('leaderboardList').innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-dim);">No data for this filter.</div>';
+    return;
+  }
+  document.getElementById('leaderboardList').innerHTML = data.map(s => {
+    const init  = s.name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
+    const rCls  = s.rank===1?'rank-1':s.rank===2?'rank-2':s.rank===3?'rank-3':'rank-n';
+    const avBg  = s.rank===1?'linear-gradient(135deg,#ffd700,#b8860b)':s.rank===2?'linear-gradient(135deg,#c0c0c0,#808080)':s.rank===3?'linear-gradient(135deg,#cd7f32,#8b4513)':'linear-gradient(135deg,var(--primary),var(--secondary))';
+    const avClr = s.rank<=2?'#000':'#000';
+    return `<div class="lb-row">
+      <div class="rank-badge ${rCls}">${s.badge||s.rank}</div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="lb-avatar" style="background:${avBg};color:${avClr};">${init}</div>
+        <div>
+          <p style="color:var(--text);font-size:0.86rem;font-weight:600;">${s.name}</p>
+          <p style="font-family:var(--font-mono);font-size:0.7rem;color:var(--primary);">${s.regNo||s.registrationNumber||''}</p>
+          <span class="badge badge-primary" style="font-size:0.65rem;padding:2px 7px;">${(s.course||'').split(' ')[0]}</span>
+        </div>
+      </div>
+      <div class="metric">
+        <span class="val" style="color:${s.gradeColor};">${s.compositeScore}%</span>
+        <div class="mini-bar"><div class="mini-fill" style="width:${s.compositeScore}%;background:${s.gradeColor};"></div></div>
+      </div>
+      <div class="metric">
+        <span class="val" style="color:${s.gradeColor};">${s.grade}</span>
+        <span class="lbl">${s.avgGrade}%</span>
+      </div>
+      <div class="metric">
+        <span class="val" style="color:${s.attRate>=80?'var(--success)':'var(--warning)'};">${s.attRate}%</span>
+        <div class="mini-bar"><div class="mini-fill" style="width:${s.attRate}%;background:${s.attRate>=80?'var(--success)':'var(--warning)'};"></div></div>
+      </div>
+      <div class="metric">
+        <span class="val" style="color:var(--primary);">${s.lessonsCompleted}</span>
+        <span class="lbl">lessons</span>
+      </div>
+      <div style="display:flex;gap:5px;justify-content:center;">
+        <a href="students.html" class="btn btn-sm btn-outline" title="View Profile"><i class="fas fa-eye"></i></a>
+        <a href="grades.html" class="btn btn-sm btn-ghost" title="View Grades"><i class="fas fa-star"></i></a>
+        <a href="messages.html" class="btn btn-sm btn-ghost" title="Message Student"><i class="fas fa-comment"></i></a>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function exportCSV() {
+  const filtered = currentFilter === 'all' ? allData : allData.filter(s => s.course === currentFilter);
+  const sorted   = [...filtered].sort((a,b) => b.compositeScore - a.compositeScore);
+  const header   = 'Rank,Name,Reg No,Course,Score,Grade,Avg Grade,Attendance,Lessons Done\n';
+  const rows     = sorted.map((s,i) =>
+    `${i+1},"${s.name}","${s.regNo||s.registrationNumber||''}","${s.course}",${s.compositeScore}%,${s.grade},${s.avgGrade}%,${s.attRate}%,${s.lessonsCompleted}`
+  ).join('\n');
+  const blob = new Blob([header + rows], { type: 'text/csv' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = `codebreakers-leaderboard-${new Date().toISOString().split('T')[0]}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Leaderboard exported as CSV!', 'success');
+}
+
+document.addEventListener('DOMContentLoaded', loadLeaderboard);
+setInterval(loadLeaderboard, 60000);
+</script>
+</body>
+</html>

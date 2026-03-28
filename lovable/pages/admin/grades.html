@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Grades | Admin | CodeBreakers</title>
+  <link rel="stylesheet" href="../../css/style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+<canvas id="particles-canvas"></canvas>
+<div class="app-layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header"><div class="nav-logo"><div class="logo-icon"><i class="fas fa-code"></i></div><span class="logo-text">Code<span class="accent">Breakers</span></span></div></div>
+    <nav class="sidebar-nav"><ul>
+      <li><a href="dashboard.html" class="sidebar-link"><i class="fas fa-th-large"></i> Dashboard</a></li>
+      <li><a href="students.html" class="sidebar-link"><i class="fas fa-users"></i> Students</a></li>
+      <li><a href="courses.html" class="sidebar-link"><i class="fas fa-book"></i> Courses</a></li>
+      <li><a href="lessons.html" class="sidebar-link"><i class="fas fa-video"></i> Lessons</a></li>
+      <li><a href="exams.html" class="sidebar-link"><i class="fas fa-file-alt"></i> Exams</a></li>
+      <li><a href="assignments.html" class="sidebar-link"><i class="fas fa-tasks"></i> Assignments</a></li>
+      <li><a href="grades.html" class="sidebar-link active"><i class="fas fa-star"></i> Grades</a></li>
+      <li><a href="leaderboard.html" class="sidebar-link"><i class="fas fa-trophy"></i> Leaderboard</a></li>
+      <li><a href="attendance.html" class="sidebar-link"><i class="fas fa-calendar-check"></i> Attendance</a></li>
+      <li><a href="messages.html" class="sidebar-link"><i class="fas fa-comments"></i> Messages</a></li>
+      <li><a href="../login.html" class="sidebar-link"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+    </ul></nav>
+  </aside>
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-left">
+        <button id="sidebarToggle" style="background:none;border:none;color:var(--text-muted);font-size:1.2rem;cursor:pointer;"><i class="fas fa-bars"></i></button>
+        <span class="topbar-title">Grade Management</span>
+      </div>
+      <div class="topbar-right">
+        <button class="btn btn-outline btn-sm"><i class="fas fa-download"></i> Export CSV</button>
+        <button class="btn btn-primary btn-sm" onclick="openModal('gradeModal')"><i class="fas fa-plus"></i> Add Grade</button>
+      </div>
+    </div>
+    <div class="page-content">
+      <div class="stat-cards" style="margin-bottom:24px;">
+        <div class="stat-card"><div class="stat-card-icon icon-green"><i class="fas fa-star"></i></div><div class="stat-card-info"><p>Class Average</p><h3>76%</h3></div></div>
+        <div class="stat-card"><div class="stat-card-icon icon-blue"><i class="fas fa-trophy"></i></div><div class="stat-card-info"><p>Top Score</p><h3>98%</h3></div></div>
+        <div class="stat-card"><div class="stat-card-icon icon-red"><i class="fas fa-exclamation-triangle"></i></div><div class="stat-card-info"><p>Below 50%</p><h3>12</h3></div></div>
+        <div class="stat-card"><div class="stat-card-icon icon-purple"><i class="fas fa-users"></i></div><div class="stat-card-info"><p>Graded</p><h3>1,240</h3></div></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;">
+        <div class="card">
+          <h3 style="color:var(--text);font-size:1rem;margin-bottom:16px;">Grade Distribution</h3>
+          <div style="display:flex;flex-direction:column;gap:10px;" id="gradeDistribution"></div>
+        </div>
+        <div class="card">
+          <h3 style="color:var(--text);font-size:1rem;margin-bottom:16px;">Average Score by Course</h3>
+          <canvas id="courseGradeChart" height="200"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
+          <h3 style="color:var(--text);font-size:1rem;flex:1;">Student Grade Records</h3>
+          <input type="text" id="gradeSearch" placeholder="Search student..." style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius);padding:8px 14px;color:var(--text);font-size:0.85rem;outline:none;"/>
+          <select class="form-control" style="width:auto;" id="gradeCourseFilter">
+            <option value="">All Courses</option>
+            <option>Frontend</option><option>Backend</option><option>Cybersecurity</option>
+          </select>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr><th>Student</th><th>Reg. No.</th><th>Course</th><th>Exams</th><th>Assignments</th><th>Overall</th><th>Grade</th><th>Actions</th></tr></thead>
+            <tbody id="gradesTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="gradeModal">
+  <div class="modal">
+    <div class="modal-header"><h3><i class="fas fa-star" style="color:var(--warning);margin-right:8px;"></i>Add / Edit Grade</h3><button class="modal-close"><i class="fas fa-times"></i></button></div>
+    <div class="form-group"><label>Student</label><select class="form-control"><option>Aisha Mohammed (CB-2026-10001)</option><option>Ibrahim Khalil (CB-2026-10002)</option><option>Fatima Zahra (CB-2026-10003)</option></select></div>
+    <div class="form-group"><label>Assessment</label><select class="form-control"><option>HTML Basics Quiz</option><option>CSS & Flexbox Test</option><option>JavaScript Fundamentals</option></select></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div class="form-group"><label>Score (%)</label><input type="number" class="form-control" placeholder="e.g. 85" min="0" max="100"/></div>
+      <div class="form-group"><label>Max Score</label><input type="number" class="form-control" value="100"/></div>
+    </div>
+    <div class="form-group"><label>Feedback</label><textarea class="form-control" rows="3" placeholder="Instructor feedback..."></textarea></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('gradeModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveGrade()"><i class="fas fa-save"></i> Save Grade</button>
+    </div>
+  </div>
+</div>
+
+<script src="../../js/particles.js"></script>
+<script src="../../js/app.js"></script>
+<script>
+const gradesData = [
+  { name:'Aisha Mohammed', reg:'CB-2026-10001', course:'Frontend', exams:84, assignments:91, overall:87 },
+  { name:'Ibrahim Khalil', reg:'CB-2026-10002', course:'Backend', exams:65, assignments:72, overall:68 },
+  { name:'Fatima Zahra', reg:'CB-2026-10003', course:'Cybersecurity', exams:92, assignments:95, overall:93 },
+  { name:'Yusuf Adamu', reg:'CB-2026-10004', course:'Frontend', exams:71, assignments:78, overall:74 },
+  { name:'Maryam Bashir', reg:'CB-2026-10005', course:'Backend', exams:55, assignments:62, overall:58 },
+  { name:'Umar Saleh', reg:'CB-2026-10006', course:'Cybersecurity', exams:97, assignments:98, overall:97 },
+  { name:'Khadijah Sule', reg:'CB-2026-10007', course:'Frontend', exams:78, assignments:82, overall:80 },
+  { name:'Hassan Musa', reg:'CB-2026-10008', course:'Backend', exams:83, assignments:88, overall:85 },
+];
+
+function getGrade(pct) {
+  if(pct>=90)return{l:'A+',c:'var(--success)'};if(pct>=80)return{l:'A',c:'var(--success)'};
+  if(pct>=70)return{l:'B',c:'var(--primary)'};if(pct>=60)return{l:'C',c:'var(--warning)'};return{l:'F',c:'var(--danger)'};
+}
+
+function renderTable(data) {
+  document.getElementById('gradesTable').innerHTML = data.map(s => {
+    const g = getGrade(s.overall);
+    return `<tr>
+      <td><div style="display:flex;align-items:center;gap:8px;"><div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:700;color:#000;">${s.name[0]}</div>${s.name}</div></td>
+      <td><span style="font-family:var(--font-mono);font-size:0.78rem;color:var(--primary);">${s.reg}</span></td>
+      <td><span class="badge badge-primary">${s.course}</span></td>
+      <td><strong style="color:${getGrade(s.exams).c};">${s.exams}%</strong></td>
+      <td><strong style="color:${getGrade(s.assignments).c};">${s.assignments}%</strong></td>
+      <td><div style="display:flex;align-items:center;gap:8px;"><div class="progress-bar-wrap" style="flex:1;"><div class="progress-bar" style="width:${s.overall}%;"></div></div><span style="font-size:0.82rem;color:${g.c};font-weight:700;white-space:nowrap;">${s.overall}%</span></div></td>
+      <td><span class="badge" style="background:${g.c}22;color:${g.c};border:1px solid ${g.c}44;">${g.l}</span></td>
+      <td><button class="btn btn-sm btn-outline" onclick="openModal('gradeModal')"><i class="fas fa-edit"></i></button></td>
+    </tr>`;
+  }).join('');
+}
+
+// Grade distribution
+const dist = [{l:'A+ (90-100)',n:48,c:'var(--success)'},{l:'A (80-89)',n:142,c:'var(--primary)'},{l:'B (70-79)',n:178,c:'#c084fc'},{l:'C (60-69)',n:89,c:'var(--warning)'},{l:'F (<60)',n:43,c:'var(--danger)'}];
+document.getElementById('gradeDistribution').innerHTML = dist.map(d=>`
+  <div>
+    <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+      <span style="font-size:0.82rem;color:var(--text);">${d.l}</span>
+      <span style="font-size:0.82rem;color:${d.c};font-weight:700;">${d.n} students</span>
+    </div>
+    <div class="progress-bar-wrap"><div class="progress-bar" style="width:${(d.n/500)*100}%;background:${d.c};"></div></div>
+  </div>`).join('');
+
+renderBarChart('courseGradeChart', ['Frontend','Backend','Security','JavaScript','Python'], [82,74,88,71,77], '#c084fc');
+renderTable(gradesData);
+
+document.getElementById('gradeSearch').addEventListener('input', function() {
+  const q = this.value.toLowerCase();
+  renderTable(gradesData.filter(s => s.name.toLowerCase().includes(q) || s.reg.toLowerCase().includes(q)));
+});
+document.getElementById('gradeCourseFilter').addEventListener('change', function() {
+  renderTable(this.value ? gradesData.filter(s=>s.course===this.value) : gradesData);
+});
+
+function saveGrade() { showToast('Grade saved successfully!','success'); closeModal('gradeModal'); }
+</script>
+</body>
+</html>

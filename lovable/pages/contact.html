@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact | CodeBreakers</title>
+  <link rel="stylesheet" href="../css/style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    .page-hero{padding:160px 24px 80px;text-align:center;position:relative;z-index:1;border-bottom:1px solid var(--border);}
+    .contact-grid{display:grid;grid-template-columns:1fr 1.4fr;gap:60px;align-items:start;}
+    .contact-info{display:flex;flex-direction:column;gap:24px;}
+    .contact-item{display:flex;gap:16px;align-items:flex-start;}
+    .contact-icon{width:48px;height:48px;border-radius:var(--radius);background:rgba(0,245,255,0.1);border:1px solid var(--border-glow);display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:1.2rem;flex-shrink:0;}
+    .contact-item h4{color:var(--text);margin-bottom:4px;}
+    .contact-item p,.contact-item a{font-size:0.9rem;color:var(--text-muted);}
+    .contact-form-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:36px;}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+    @media(max-width:768px){.contact-grid{grid-template-columns:1fr;}.form-row{grid-template-columns:1fr;}}
+  </style>
+</head>
+<body>
+<canvas id="particles-canvas"></canvas>
+<nav class="navbar scrolled" id="navbar">
+  <div class="nav-container">
+    <a href="../index.html" class="nav-logo"><div class="logo-icon"><i class="fas fa-code"></i></div><span class="logo-text">Code<span class="accent">Breakers</span></span></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html" class="nav-link">Home</a></li>
+      <li><a href="about.html" class="nav-link">About</a></li>
+      <li><a href="courses.html" class="nav-link">Courses</a></li>
+      <li><a href="contact.html" class="nav-link active">Contact</a></li>
+      <li><a href="privacy.html" class="nav-link">Privacy</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="login.html" class="btn btn-outline">Student Login</a>
+      <a href="login.html" class="btn btn-primary">Admin</a>
+    </div>
+    <button class="hamburger" id="hamburger"><i class="fas fa-bars"></i></button>
+  </div>
+</nav>
+
+<section class="page-hero">
+  <span class="section-tag">Get In Touch</span>
+  <h1>Contact <span class="gradient-text">CodeBreakers</span></h1>
+  <p style="max-width:520px;margin:16px auto 0;color:var(--text-muted);">Have questions about our courses, platform, or enrollment? We're here to help.</p>
+</section>
+
+<div class="section">
+  <div class="contact-grid">
+    <div class="contact-info">
+      <div>
+        <h2 style="margin-bottom:12px;">Let's <span class="gradient-text">Talk</span></h2>
+        <p>Reach out to our team and we'll get back to you within 24 hours. You can also find us on social media.</p>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+        <div><h4>Email</h4><a href="mailto:hello@codebreakers.academy">hello@codebreakers.academy</a></div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+        <div><h4>Location</h4><p>Online & Remote — Serving students worldwide</p></div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon"><i class="fas fa-clock"></i></div>
+        <div><h4>Support Hours</h4><p>Mon–Fri: 9am–6pm WAT<br>Weekend: 10am–4pm WAT</p></div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon"><i class="fab fa-whatsapp"></i></div>
+        <div><h4>WhatsApp</h4><a href="#">Chat with us on WhatsApp</a></div>
+      </div>
+      <div>
+        <h4 style="color:var(--text);margin-bottom:14px;">Follow Us</h4>
+        <div style="display:flex;gap:12px;">
+          <a href="#" style="width:42px;height:42px;border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--text-muted);transition:var(--transition);font-size:1.1rem;"><i class="fab fa-twitter"></i></a>
+          <a href="#" style="width:42px;height:42px;border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--text-muted);transition:var(--transition);font-size:1.1rem;"><i class="fab fa-linkedin"></i></a>
+          <a href="#" style="width:42px;height:42px;border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--text-muted);transition:var(--transition);font-size:1.1rem;"><i class="fab fa-github"></i></a>
+          <a href="#" style="width:42px;height:42px;border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--text-muted);transition:var(--transition);font-size:1.1rem;"><i class="fab fa-youtube"></i></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-form-card">
+      <h3 style="color:var(--text);margin-bottom:24px;">Send Us a <span class="gradient-text">Message</span></h3>
+      <div id="contactAlert"></div>
+      <form id="contactForm">
+        <div class="form-row">
+          <div class="form-group"><label>First Name</label><input type="text" class="form-control" placeholder="Abdussalam" required/></div>
+          <div class="form-group"><label>Last Name</label><input type="text" class="form-control" placeholder="Nasir" required/></div>
+        </div>
+        <div class="form-group"><label>Email Address</label><input type="email" class="form-control" placeholder="your@email.com" required/></div>
+        <div class="form-group"><label>Subject</label>
+          <select class="form-control" required>
+            <option value="">Select a subject...</option>
+            <option>Course Enquiry</option>
+            <option>Technical Support</option>
+            <option>Enrollment Help</option>
+            <option>Partnership</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Message</label><textarea class="form-control" rows="5" placeholder="Write your message here..." required></textarea></div>
+        <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-paper-plane"></i> Send Message</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div style="margin-top:80px;">
+    <div style="text-align:center;margin-bottom:40px;">
+      <span class="section-tag">FAQ</span>
+      <h2 style="margin-top:16px;">Frequently Asked <span class="gradient-text">Questions</span></h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;">
+      <div class="card"><h4 style="color:var(--text);margin-bottom:10px;"><i class="fas fa-question-circle" style="color:var(--primary);margin-right:8px;"></i>How do I enroll?</h4><p style="font-size:0.88rem;">Click "Student Login", register with your details, and you'll automatically receive a unique registration number.</p></div>
+      <div class="card"><h4 style="color:var(--text);margin-bottom:10px;"><i class="fas fa-question-circle" style="color:var(--primary);margin-right:8px;"></i>Are the courses sequential?</h4><p style="font-size:0.88rem;">Yes. Students must complete each lesson before accessing the next to ensure solid foundational knowledge.</p></div>
+      <div class="card"><h4 style="color:var(--text);margin-bottom:10px;"><i class="fas fa-question-circle" style="color:var(--primary);margin-right:8px;"></i>Is there a coding sandbox?</h4><p style="font-size:0.88rem;">Yes! Our built-in sandbox supports HTML, CSS, JavaScript, Node.js, and Python with real-time preview.</p></div>
+      <div class="card"><h4 style="color:var(--text);margin-bottom:10px;"><i class="fas fa-question-circle" style="color:var(--primary);margin-right:8px;"></i>Do I get a certificate?</h4><p style="font-size:0.88rem;">Students receive a certificate upon completing a course with a passing grade on all assessments and assignments.</p></div>
+    </div>
+  </div>
+</div>
+
+<footer class="footer" style="position:relative;z-index:1;">
+  <div style="padding-bottom:30px;border-bottom:1px solid var(--border);"><div class="nav-logo" style="margin-bottom:10px;"><div class="logo-icon"><i class="fas fa-code"></i></div><span class="logo-text">Code<span class="accent">Breakers</span></span></div></div>
+  <div class="footer-bottom"><p>&copy; 2026 CodeBreakers. All rights reserved.</p></div>
+</footer>
+
+<script src="../js/particles.js"></script>
+<script src="../js/app.js"></script>
+<script>
+document.getElementById('contactForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  const alert = document.getElementById('contactAlert');
+  alert.innerHTML = '<div class="alert alert-success"><i class="fas fa-check-circle"></i> Thank you! Your message has been sent. We\'ll respond within 24 hours.</div>';
+  this.reset();
+  setTimeout(() => alert.innerHTML = '', 5000);
+});
+</script>
+</body>
+</html>

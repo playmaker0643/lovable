@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Courses | CodeBreakers</title>
+  <link rel="stylesheet" href="../css/style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    .page-hero{padding:160px 24px 80px;text-align:center;position:relative;z-index:1;border-bottom:1px solid var(--border);}
+    .filter-bar{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:40px;}
+    .filter-btn{padding:8px 20px;border-radius:50px;border:1px solid var(--border);background:transparent;color:var(--text-muted);font-family:var(--font-heading);font-size:0.8rem;letter-spacing:1px;cursor:pointer;transition:var(--transition);}
+    .filter-btn.active,.filter-btn:hover{background:rgba(0,245,255,0.1);border-color:var(--border-glow);color:var(--primary);}
+    .courses-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:28px;}
+    .course-card-full{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;transition:var(--transition);display:flex;flex-direction:column;}
+    .course-card-full:hover{border-color:var(--border-glow);transform:translateY(-4px);box-shadow:var(--shadow-glow);}
+    .course-thumb{height:180px;display:flex;align-items:center;justify-content:center;font-size:4rem;position:relative;}
+    .course-thumb.fe{background:linear-gradient(135deg,rgba(0,245,255,0.1),rgba(0,245,255,0.03));}
+    .course-thumb.be{background:linear-gradient(135deg,rgba(123,47,247,0.12),rgba(123,47,247,0.03));}
+    .course-thumb.sec{background:linear-gradient(135deg,rgba(255,107,53,0.12),rgba(255,107,53,0.03));}
+    .course-thumb-badge{position:absolute;top:12px;right:12px;}
+    .course-body{padding:24px;flex:1;display:flex;flex-direction:column;gap:12px;}
+    .course-body h3{color:var(--text);}
+    .course-body p{font-size:0.88rem;flex:1;}
+    .course-meta{display:flex;gap:16px;flex-wrap:wrap;}
+    .course-meta span{display:flex;align-items:center;gap:5px;font-size:0.8rem;color:var(--text-muted);}
+    .course-meta span i{color:var(--primary);}
+    .curriculum{border-top:1px solid var(--border);padding-top:16px;}
+    .curriculum-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:0.85rem;color:var(--text-muted);}
+    .curriculum-item i{color:var(--primary);width:16px;}
+  </style>
+</head>
+<body>
+<canvas id="particles-canvas"></canvas>
+<nav class="navbar scrolled" id="navbar">
+  <div class="nav-container">
+    <a href="../index.html" class="nav-logo"><div class="logo-icon"><i class="fas fa-code"></i></div><span class="logo-text">Code<span class="accent">Breakers</span></span></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html" class="nav-link">Home</a></li>
+      <li><a href="about.html" class="nav-link">About</a></li>
+      <li><a href="courses.html" class="nav-link active">Courses</a></li>
+      <li><a href="contact.html" class="nav-link">Contact</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="login.html" class="btn btn-outline">Student Login</a>
+      <a href="login.html" class="btn btn-primary">Admin</a>
+    </div>
+    <button class="hamburger" id="hamburger"><i class="fas fa-bars"></i></button>
+  </div>
+</nav>
+
+<section class="page-hero">
+  <span class="section-tag">All Courses</span>
+  <h1>Our <span class="gradient-text">Learning Paths</span></h1>
+  <p style="max-width:580px;margin:16px auto 0;color:var(--text-muted);">From HTML basics to advanced penetration testing — choose your path and start building real-world skills today.</p>
+</section>
+
+<div class="section">
+  <div class="filter-bar">
+    <button class="filter-btn active" data-filter="all">All Courses</button>
+    <button class="filter-btn" data-filter="frontend">Frontend</button>
+    <button class="filter-btn" data-filter="backend">Backend</button>
+    <button class="filter-btn" data-filter="security">Cybersecurity</button>
+  </div>
+
+  <div class="courses-grid" id="coursesGrid">
+    <!-- Frontend -->
+    <div class="course-card-full" data-cat="frontend">
+      <div class="course-thumb fe">🌐<span class="course-thumb-badge badge badge-primary">Beginner</span></div>
+      <div class="course-body">
+        <h3>HTML & CSS Fundamentals</h3>
+        <p>Build a solid foundation in web structure and styling. Learn semantic HTML5, modern CSS3, Flexbox, and Grid.</p>
+        <div class="course-tags"><span>HTML5</span><span>CSS3</span><span>Flexbox</span><span>Grid</span></div>
+        <div class="course-meta"><span><i class="fas fa-play-circle"></i>24 Lessons</span><span><i class="fas fa-clock"></i>18 Hours</span><span><i class="fas fa-signal"></i>Beginner</span></div>
+        <a href="login.html" class="btn btn-outline btn-sm" style="margin-top:auto;">Enroll Now</a>
+      </div>
+    </div>
+    <div class="course-card-full" data-cat="frontend">
+      <div class="course-thumb fe">⚡<span class="course-thumb-badge badge badge-warning">Intermediate</span></div>
+      <div class="course-body">
+        <h3>JavaScript Mastery</h3>
+        <p>Deep dive into JavaScript — variables, functions, DOM, async/await, ES6+, and modern JS patterns.</p>
+        <div class="course-tags"><span>JavaScript</span><span>ES6+</span><span>DOM</span><span>Async</span></div>
+        <div class="course-meta"><span><i class="fas fa-play-circle"></i>36 Lessons</span><span><i class="fas fa-clock"></i>28 Hours</span><span><i class="fas fa-signal"></i>Intermediate</span></div>
+        <a href="login.html" class="btn btn-outline btn-sm" style="margin-top:auto;">Enroll Now</a>
+      </div>
+    </div>
+    <div class="course-card-full" data-cat="frontend">
+      <div class="course-thumb fe">⚛️<span class="course-thumb-badge badge badge-danger">Advanced</span></div>
+      <div class="course-body">
+        <h3>Advanced Frontend Frameworks</h3>
+        <p>Master React, component architecture, state management, and build production-ready web applications.</p>
+        <div class="course-tags"><span>React</span><span>State</span><span>Hooks</span><span>Deploy</span></div>
+        <div class="course-meta"><span><i class="fas fa-play-circle"></i>42 Lessons</span><span><i class="fas fa-clock"></i>35 Hours</span><span><i class="fas fa-signal"></i>Advanced</span></div>
+        <a href="login.html" class="btn btn-outline btn-sm" style="margin-top:auto;">Enroll Now</a>
+      </div>
+    </div>
+    <!-- Backend -->
+    <div class="course-card-full" data-cat="backend">
+      <div class="course-thumb be">🟢<span class="course-thumb-badge badge badge-warning">Intermediate</span></div>
+      <div class="course-body">
+        <h3>Node.js & Express</h3>
+        <p>Build scalable server-side applications with Node.js, Express, REST APIs, authentication, and databases.</p>
+        <div class="course-tags"><span>Node.js</span><span>Express</span><span>REST API</span><span>MongoDB</span></div>
+        <div class="course-meta"><span><i class="fas fa-play-circle"></i>38 Lessons</span><span><i class="fas fa-clock"></i>30 Hours</span><span><i class="fas fa-signal"></i>Intermediate</span></div>
+        <a href="login.html" class="btn btn-outline btn-sm" style="margin-top:auto;">Enroll Now</a>
+      </div>
+    </div>
+    <div class="course-card-full" data-cat="backend">
+      <div class="course-thumb be">🐍<span class="course-thumb-badge badge badge-warning">Intermediate</span></div>
+      <div class="course-body">
+        <h3>Python for Developers</h3>
+        <p>Learn Python from scratch — syntax, OOP, data structures, Flask/Django, and API development.</p>
+        <div class="course-tags"><span>Python</span><span>Flask</span><span>OOP</span><span>APIs</span></div>
+        <div class="course-meta"><span><i class="fas fa-play-circle"></i>40 Lessons</span><span><i class="fas fa-clock"></i>32 Hours</span><span><i class="fas fa-signal"></i>Intermediate</span></div>
+        <a href="login.html" class="btn btn-outline btn-sm" style="margin-top:auto;">Enroll Now</a>
+      </div>
+    </div>
+    <div class="course-card-full" data-cat="backend">
+      <div class="course-thumb be">🗄️<span class="course-thumb-badge badge badge-danger">Advanced</span></div>
+      <div class="course-body">
+        <h3>Advanced Backend Architecture</h3>
+        <p>Microservices, Docker, CI/CD pipelines, cloud deployment, caching strategies, and scalable architectures.</p>
+        <div class="course-tags"><span>Docker</span><span>Microservices</span><span>CI/CD</span><span>Cloud</span></div>
+        <div class="course-meta"><span><i class="fas fa-play-circle"></i>44 Lessons</span><span><i class="fas fa-clock"></i>38 Hours</span><span><i class="fas fa-signal"></i>Advanced</span></div>
+        <a href="login.html" class="btn btn-outline btn-sm" style="margin-top:auto;">Enroll Now</a>
+      </div>
+    </div>
+    <!-- Security -->
+    <div class="course-card-full" data-cat="security">
+      <div class="course-thumb sec">🛡️<span class="course-thumb-badge badge badge-primary">Beginner</span></div>
+      <div class="course-body">
+        <h3>Web Application Security</h3>
+        <p>Learn how to secure web apps — OWASP Top 10, authentication, input validation, HTTPS, and data protection.</p>
+        <div class="course-tags"><span>OWASP</span><span>Auth</span><span>HTTPS</span><span>JWT</span></div>
+        <div class="course-meta"><span><i class="fas fa-play-circle"></i>28 Lessons</span><span><i class="fas fa-clock"></i>22 Hours</span><span><i class="fas fa-signal"></i>Beginner</span></div>
+        <a href="login.html" class="btn btn-outline btn-sm" style="margin-top:auto;">Enroll Now</a>
+      </div>
+    </div>
+    <div class="course-card-full" data-cat="security">
+      <div class="course-thumb sec">🔍<span class="course-thumb-badge badge badge-warning">Intermediate</span></div>
+      <div class="course-body">
+        <h3>Ethical Hacking & Pen Testing</h3>
+        <p>Offensive security techniques — reconnaissance, exploitation, post-exploitation, and reporting.</p>
+        <div class="course-tags"><span>Kali Linux</span><span>Nmap</span><span>Metasploit</span><span>Burp Suite</span></div>
+        <div class="course-meta"><span><i class="fas fa-play-circle"></i>50 Lessons</span><span><i class="fas fa-clock"></i>42 Hours</span><span><i class="fas fa-signal"></i>Intermediate</span></div>
+        <a href="login.html" class="btn btn-outline btn-sm" style="margin-top:auto;">Enroll Now</a>
+      </div>
+    </div>
+    <div class="course-card-full" data-cat="security">
+      <div class="course-thumb sec">🔐<span class="course-thumb-badge badge badge-danger">Advanced</span></div>
+      <div class="course-body">
+        <h3>Advanced Network Security</h3>
+        <p>Network protocols, firewall configuration, IDS/IPS, VPNs, packet analysis, and advanced attack vectors.</p>
+        <div class="course-tags"><span>Wireshark</span><span>Firewall</span><span>VPN</span><span>IDS/IPS</span></div>
+        <div class="course-meta"><span><i class="fas fa-play-circle"></i>46 Lessons</span><span><i class="fas fa-clock"></i>40 Hours</span><span><i class="fas fa-signal"></i>Advanced</span></div>
+        <a href="login.html" class="btn btn-outline btn-sm" style="margin-top:auto;">Enroll Now</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="footer" style="position:relative;z-index:1;">
+  <div style="padding-bottom:30px;border-bottom:1px solid var(--border);">
+    <div class="nav-logo" style="margin-bottom:10px;"><div class="logo-icon"><i class="fas fa-code"></i></div><span class="logo-text">Code<span class="accent">Breakers</span></span></div>
+  </div>
+  <div class="footer-bottom"><p>&copy; 2026 CodeBreakers. All rights reserved.</p></div>
+</footer>
+
+<script src="../js/particles.js"></script>
+<script src="../js/app.js"></script>
+<script>
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      const filter = this.dataset.filter;
+      document.querySelectorAll('.course-card-full').forEach(card => {
+        card.style.display = (filter === 'all' || card.dataset.cat === filter) ? '' : 'none';
+      });
+    });
+  });
+</script>
+</body>
+</html>

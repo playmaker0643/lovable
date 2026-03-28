@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Privacy Policy | CodeBreakers</title>
+  <link rel="stylesheet" href="../css/style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    .page-hero{padding:160px 24px 80px;text-align:center;position:relative;z-index:1;border-bottom:1px solid var(--border);}
+    .privacy-layout{display:grid;grid-template-columns:240px 1fr;gap:48px;align-items:start;}
+    .privacy-toc{position:sticky;top:90px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;}
+    .privacy-toc h4{color:var(--text);font-size:0.85rem;letter-spacing:2px;margin-bottom:16px;text-transform:uppercase;}
+    .privacy-toc a{display:block;color:var(--text-muted);font-size:0.85rem;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.04);transition:var(--transition);}
+    .privacy-toc a:hover{color:var(--primary);}
+    .privacy-section{margin-bottom:48px;}
+    .privacy-section h2{color:var(--text);font-size:1.4rem;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+    .privacy-section h3{color:var(--primary);font-size:1rem;margin:20px 0 10px;}
+    .privacy-section p,.privacy-section li{font-size:0.92rem;color:var(--text-muted);line-height:1.8;margin-bottom:10px;}
+    .privacy-section ul{padding-left:20px;}
+    .privacy-section li{list-style:none;position:relative;padding-left:20px;}
+    .privacy-section li::before{content:'▸';position:absolute;left:0;color:var(--primary);}
+    .updated-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(0,245,255,0.08);border:1px solid var(--border-glow);color:var(--primary);padding:6px 14px;border-radius:50px;font-size:0.8rem;margin-bottom:32px;}
+    @media(max-width:768px){.privacy-layout{grid-template-columns:1fr;}.privacy-toc{position:static;}}
+  </style>
+</head>
+<body>
+<canvas id="particles-canvas"></canvas>
+<nav class="navbar scrolled" id="navbar">
+  <div class="nav-container">
+    <a href="../index.html" class="nav-logo"><div class="logo-icon"><i class="fas fa-code"></i></div><span class="logo-text">Code<span class="accent">Breakers</span></span></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html" class="nav-link">Home</a></li>
+      <li><a href="about.html" class="nav-link">About</a></li>
+      <li><a href="courses.html" class="nav-link">Courses</a></li>
+      <li><a href="contact.html" class="nav-link">Contact</a></li>
+      <li><a href="privacy.html" class="nav-link active">Privacy</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="login.html" class="btn btn-outline">Student Login</a>
+      <a href="login.html" class="btn btn-primary">Admin</a>
+    </div>
+    <button class="hamburger" id="hamburger"><i class="fas fa-bars"></i></button>
+  </div>
+</nav>
+
+<section class="page-hero">
+  <span class="section-tag">Legal</span>
+  <h1>Privacy <span class="gradient-text">Policy</span></h1>
+  <p style="max-width:520px;margin:16px auto 0;color:var(--text-muted);">We are committed to protecting your privacy and ensuring the security of your personal data.</p>
+</section>
+
+<div class="section">
+  <div class="privacy-layout">
+    <div class="privacy-toc">
+      <h4>Contents</h4>
+      <a href="#intro">1. Introduction</a>
+      <a href="#data">2. Data We Collect</a>
+      <a href="#use">3. How We Use Data</a>
+      <a href="#storage">4. Data Storage</a>
+      <a href="#sharing">5. Data Sharing</a>
+      <a href="#cookies">6. Cookies</a>
+      <a href="#rights">7. Your Rights</a>
+      <a href="#security">8. Security</a>
+      <a href="#children">9. Children's Privacy</a>
+      <a href="#changes">10. Policy Changes</a>
+      <a href="#contact">11. Contact Us</a>
+    </div>
+
+    <div class="privacy-content">
+      <div class="updated-badge"><i class="fas fa-calendar-alt"></i> Last Updated: January 2026</div>
+
+      <div class="privacy-section" id="intro">
+        <h2>1. Introduction</h2>
+        <p>Welcome to CodeBreakers ("we", "our", "us"). This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our e-learning platform at codebreakers.academy.</p>
+        <p>By accessing or using our platform, you agree to the collection and use of information in accordance with this policy. CodeBreakers was created by Abdussalam Nasir and Abdulhafiz Nasir, and we are committed to maintaining the trust and confidence of all users.</p>
+      </div>
+
+      <div class="privacy-section" id="data">
+        <h2>2. Data We Collect</h2>
+        <h3>Personal Information</h3>
+        <ul>
+          <li>Full name, email address, and password (hashed)</li>
+          <li>Unique auto-generated student registration number</li>
+          <li>Profile information (optional bio, location)</li>
+          <li>Contact details provided during registration</li>
+        </ul>
+        <h3>Learning Data</h3>
+        <ul>
+          <li>Lesson progress, completion records, and attendance logs</li>
+          <li>Exam scores, assignment submissions, and grades</li>
+          <li>Coding sandbox sessions and saved code projects</li>
+          <li>Time spent on courses and individual lessons</li>
+        </ul>
+        <h3>Technical Data</h3>
+        <ul>
+          <li>IP address, browser type, and device information</li>
+          <li>Pages visited, session duration, and click events</li>
+          <li>Login timestamps and activity logs</li>
+        </ul>
+      </div>
+
+      <div class="privacy-section" id="use">
+        <h2>3. How We Use Your Data</h2>
+        <p>We use collected information for the following purposes:</p>
+        <ul>
+          <li>To provide, maintain, and improve our e-learning platform</li>
+          <li>To track and manage student progress, attendance, and performance</li>
+          <li>To send notifications about new lessons, exams, and platform updates</li>
+          <li>To enable the messaging system between students and instructors</li>
+          <li>To generate reports for students and administrators</li>
+          <li>To prevent fraud, abuse, and ensure platform security</li>
+          <li>To comply with legal obligations</li>
+        </ul>
+      </div>
+
+      <div class="privacy-section" id="storage">
+        <h2>4. Data Storage & Retention</h2>
+        <p>Your data is stored securely on our servers. We retain personal data for as long as your account is active or as needed to provide services. Academic records (grades, certificates) may be retained for up to 5 years after account closure for verification purposes.</p>
+        <p>You may request deletion of your account and personal data at any time by contacting us at hello@codebreakers.academy.</p>
+      </div>
+
+      <div class="privacy-section" id="sharing">
+        <h2>5. Data Sharing</h2>
+        <p>We do not sell, trade, or rent your personal information to third parties. We may share data only in the following circumstances:</p>
+        <ul>
+          <li>With instructors (limited to course-related performance data)</li>
+          <li>With service providers who assist in platform operations (under strict confidentiality)</li>
+          <li>When required by law or to protect the rights and safety of users</li>
+          <li>In the event of a merger or acquisition (users will be notified)</li>
+        </ul>
+      </div>
+
+      <div class="privacy-section" id="cookies">
+        <h2>6. Cookies & Tracking</h2>
+        <p>We use cookies and similar tracking technologies to enhance your experience:</p>
+        <ul>
+          <li><strong style="color:var(--text);">Essential cookies:</strong> Required for login sessions and platform functionality</li>
+          <li><strong style="color:var(--text);">Analytics cookies:</strong> Help us understand how the platform is used</li>
+          <li><strong style="color:var(--text);">Preference cookies:</strong> Remember your settings and preferences</li>
+        </ul>
+        <p>You can control cookie settings through your browser preferences. Disabling essential cookies may affect platform functionality.</p>
+      </div>
+
+      <div class="privacy-section" id="rights">
+        <h2>7. Your Rights</h2>
+        <p>You have the following rights regarding your personal data:</p>
+        <ul>
+          <li><strong style="color:var(--text);">Access:</strong> Request a copy of the data we hold about you</li>
+          <li><strong style="color:var(--text);">Correction:</strong> Request correction of inaccurate data</li>
+          <li><strong style="color:var(--text);">Deletion:</strong> Request deletion of your personal data</li>
+          <li><strong style="color:var(--text);">Portability:</strong> Request your data in a portable format</li>
+          <li><strong style="color:var(--text);">Objection:</strong> Object to certain types of data processing</li>
+          <li><strong style="color:var(--text);">Withdraw Consent:</strong> Withdraw consent at any time where processing is based on consent</li>
+        </ul>
+        <p>To exercise these rights, contact us at hello@codebreakers.academy.</p>
+      </div>
+
+      <div class="privacy-section" id="security">
+        <h2>8. Security</h2>
+        <p>We implement industry-standard security measures to protect your data:</p>
+        <ul>
+          <li>HTTPS/TLS encryption for all data in transit</li>
+          <li>Bcrypt hashing for all stored passwords</li>
+          <li>Regular security audits and penetration testing</li>
+          <li>Access controls and role-based permissions</li>
+          <li>Secure session management with automatic timeout</li>
+        </ul>
+        <p>However, no method of transmission over the Internet is 100% secure. We strive to use commercially acceptable means to protect your data but cannot guarantee absolute security.</p>
+      </div>
+
+      <div class="privacy-section" id="children">
+        <h2>9. Children's Privacy</h2>
+        <p>CodeBreakers is intended for users aged 13 and above. We do not knowingly collect personal information from children under 13. If you believe a child under 13 has provided personal information, please contact us immediately and we will take steps to delete such information.</p>
+      </div>
+
+      <div class="privacy-section" id="changes">
+        <h2>10. Changes to This Policy</h2>
+        <p>We may update this Privacy Policy from time to time. We will notify registered users via email and platform notification when significant changes are made. The "Last Updated" date at the top of this policy will be revised accordingly.</p>
+        <p>Continued use of the platform after changes constitutes acceptance of the updated policy.</p>
+      </div>
+
+      <div class="privacy-section" id="contact">
+        <h2>11. Contact Us</h2>
+        <p>If you have questions about this Privacy Policy or your personal data, please contact us:</p>
+        <div class="card" style="margin-top:16px;">
+          <p><strong style="color:var(--text);">Email:</strong> <a href="mailto:privacy@codebreakers.academy" style="color:var(--primary);">privacy@codebreakers.academy</a></p>
+          <p style="margin-top:8px;"><strong style="color:var(--text);">Platform:</strong> <a href="contact.html" style="color:var(--primary);">Use our Contact Form</a></p>
+          <p style="margin-top:8px;"><strong style="color:var(--text);">Organization:</strong> CodeBreakers E-Learning Platform</p>
+          <p style="margin-top:8px;"><strong style="color:var(--text);">Founders:</strong> Abdussalam Nasir & Abdulhafiz Nasir</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="footer" style="position:relative;z-index:1;">
+  <div style="padding-bottom:30px;border-bottom:1px solid var(--border);"><div class="nav-logo" style="margin-bottom:10px;"><div class="logo-icon"><i class="fas fa-code"></i></div><span class="logo-text">Code<span class="accent">Breakers</span></span></div></div>
+  <div class="footer-bottom"><p>&copy; 2026 CodeBreakers. All rights reserved.</p></div>
+</footer>
+<script src="../js/particles.js"></script>
+<script src="../js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Security Training | CodeBreakers</title>
+  <link rel="stylesheet" href="../../css/style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    .sec-hero{background:linear-gradient(135deg,rgba(255,107,53,0.08),rgba(123,47,247,0.08));border:1px solid rgba(255,107,53,0.25);border-radius:var(--radius-lg);padding:32px;margin-bottom:28px;display:flex;align-items:center;gap:24px;}
+    .sec-hero-icon{font-size:3.5rem;flex-shrink:0;}
+    .vuln-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:16px;transition:var(--transition);}
+    .vuln-header{display:flex;align-items:center;gap:14px;padding:18px 20px;cursor:pointer;}
+    .vuln-header:hover{background:rgba(255,255,255,0.02);}
+    .vuln-icon{width:40px;height:40px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+    .vuln-body{padding:0 20px;max-height:0;overflow:hidden;transition:max-height 0.4s ease;}
+    .vuln-body.open{max-height:600px;padding-bottom:20px;}
+    .code-block{background:#0a0f14;border:1px solid var(--border);border-radius:var(--radius);padding:16px;font-family:var(--font-mono);font-size:0.82rem;margin:12px 0;overflow-x:auto;}
+    .code-block .bad{color:var(--danger);}
+    .code-block .good{color:var(--success);}
+    .code-block .comment{color:#6c7086;}
+    .severity{display:flex;align-items:center;gap:6px;font-size:0.78rem;font-family:var(--font-heading);letter-spacing:1px;}
+    .checklist{display:flex;flex-direction:column;gap:10px;margin-top:12px;}
+    .check-item{display:flex;align-items:flex-start;gap:10px;font-size:0.88rem;color:var(--text-muted);}
+    .check-item i{color:var(--success);margin-top:2px;flex-shrink:0;}
+  </style>
+</head>
+<body>
+<canvas id="particles-canvas"></canvas>
+<div class="app-layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header"><div class="nav-logo"><div class="logo-icon"><i class="fas fa-code"></i></div><span class="logo-text">Code<span class="accent">Breakers</span></span></div></div>
+    <nav class="sidebar-nav"><ul>
+      <li><a href="dashboard.html" class="sidebar-link"><i class="fas fa-th-large"></i> Dashboard</a></li>
+      <li><a href="lessons.html" class="sidebar-link"><i class="fas fa-video"></i> My Lessons</a></li>
+      <li><a href="exams.html" class="sidebar-link"><i class="fas fa-file-alt"></i> Exams</a></li>
+      <li><a href="grades.html" class="sidebar-link"><i class="fas fa-star"></i> My Grades</a></li>
+      <li><a href="sandbox.html" class="sidebar-link"><i class="fas fa-terminal"></i> Code Sandbox</a></li>
+      <li><a href="security.html" class="sidebar-link active"><i class="fas fa-shield-alt"></i> Security Training</a></li>
+      <li><a href="leaderboard.html" class="sidebar-link"><i class="fas fa-trophy"></i> Leaderboard</a></li>
+      <li><a href="messages.html" class="sidebar-link"><i class="fas fa-comments"></i> Messages</a></li>
+      <li><a href="#" class="sidebar-link" onclick="event.preventDefault();Auth.logoutStudent()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+    </ul></nav>
+  </aside>
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-left">
+        <button id="sidebarToggle" style="background:none;border:none;color:var(--text-muted);font-size:1.2rem;cursor:pointer;"><i class="fas fa-bars"></i></button>
+        <span class="topbar-title">Security Training</span>
+      </div>
+    </div>
+    <div class="page-content">
+      <!-- Hero -->
+      <div class="sec-hero">
+        <div class="sec-hero-icon">🛡️</div>
+        <div>
+          <h2 style="color:var(--text);margin-bottom:8px;">Project Security <span class="gradient-text">Checklist</span></h2>
+          <p>After completing each project, review these security best practices. Understanding vulnerabilities makes you a better developer and security professional.</p>
+          <div style="display:flex;gap:12px;margin-top:14px;flex-wrap:wrap;">
+            <span class="badge badge-danger"><i class="fas fa-skull-crossbones"></i> 10 Vulnerability Types</span>
+            <span class="badge badge-warning"><i class="fas fa-shield-alt"></i> Best Practices</span>
+            <span class="badge badge-primary"><i class="fas fa-bug"></i> Pen Testing Basics</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="stat-cards" style="margin-bottom:28px;">
+        <div class="stat-card"><div class="stat-card-icon icon-red"><i class="fas fa-bug"></i></div><div class="stat-card-info"><p>Vulnerabilities Studied</p><h3>8/10</h3></div></div>
+        <div class="stat-card"><div class="stat-card-icon icon-green"><i class="fas fa-shield-alt"></i></div><div class="stat-card-info"><p>Security Score</p><h3>82%</h3></div></div>
+        <div class="stat-card"><div class="stat-card-icon icon-orange"><i class="fas fa-flag"></i></div><div class="stat-card-info"><p>CTF Challenges</p><h3>3/5</h3></div></div>
+        <div class="stat-card"><div class="stat-card-icon icon-purple"><i class="fas fa-certificate"></i></div><div class="stat-card-info"><p>Modules Completed</p><h3>4/6</h3></div></div>
+      </div>
+
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="tab-owasp">OWASP Top 10</button>
+        <button class="tab-btn" data-tab="tab-auth">Authentication</button>
+        <button class="tab-btn" data-tab="tab-pentest">Pen Testing</button>
+        <button class="tab-btn" data-tab="tab-network">Networking</button>
+      </div>
+
+      <!-- OWASP Tab -->
+      <div id="tab-owasp" class="tab-pane active">
+        <div id="owaspList"></div>
+      </div>
+
+      <!-- Auth Tab -->
+      <div id="tab-auth" class="tab-pane">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+          <div class="card">
+            <h3 style="color:var(--text);margin-bottom:16px;"><i class="fas fa-key" style="color:var(--primary);margin-right:8px;"></i>Password Security</h3>
+            <div class="checklist">
+              <div class="check-item"><i class="fas fa-check-circle"></i>Never store plain-text passwords — always hash with bcrypt or Argon2</div>
+              <div class="check-item"><i class="fas fa-check-circle"></i>Enforce minimum 8 characters with complexity requirements</div>
+              <div class="check-item"><i class="fas fa-check-circle"></i>Implement account lockout after 5 failed attempts</div>
+              <div class="check-item"><i class="fas fa-check-circle"></i>Use secure password reset with time-limited tokens</div>
+              <div class="check-item"><i class="fas fa-check-circle"></i>Never expose passwords in logs or error messages</div>
+            </div>
+            <div class="code-block" style="margin-top:16px;">
+<span class="comment">// BAD - Never do this</span>
+<span class="bad">db.save({ password: userPassword });</span>
+
+<span class="comment">// GOOD - Hash with bcrypt</span>
+<span class="good">const hash = await bcrypt.hash(password, 12);
+db.save({ password: hash });</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3 style="color:var(--text);margin-bottom:16px;"><i class="fas fa-id-card" style="color:var(--warning);margin-right:8px;"></i>JWT & Session Security</h3>
+            <div class="checklist">
+              <div class="check-item"><i class="fas fa-check-circle"></i>Use short-lived JWT tokens (15 min access, 7 day refresh)</div>
+              <div class="check-item"><i class="fas fa-check-circle"></i>Store JWTs in httpOnly cookies, not localStorage</div>
+              <div class="check-item"><i class="fas fa-check-circle"></i>Implement token rotation and revocation lists</div>
+              <div class="check-item"><i class="fas fa-check-circle"></i>Always verify token signature on every request</div>
+              <div class="check-item"><i class="fas fa-check-circle"></i>Use strong secret keys (minimum 256-bit)</div>
+            </div>
+            <div class="code-block" style="margin-top:16px;">
+<span class="comment">// BAD - localStorage is XSS-vulnerable</span>
+<span class="bad">localStorage.setItem('token', jwt);</span>
+
+<span class="comment">// GOOD - httpOnly cookie</span>
+<span class="good">res.cookie('token', jwt, {
+  httpOnly: true, secure: true,
+  sameSite: 'strict', maxAge: 900000
+});</span>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:20px;">
+          <h3 style="color:var(--text);margin-bottom:16px;"><i class="fas fa-mobile-alt" style="color:var(--success);margin-right:8px;"></i>Multi-Factor Authentication (MFA)</h3>
+          <p style="margin-bottom:16px;">MFA adds a second layer of security beyond passwords. Even if a password is compromised, the attacker still cannot access the account without the second factor.</p>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;">
+            <div class="card" style="text-align:center;padding:16px;"><i class="fas fa-sms" style="color:var(--primary);font-size:1.5rem;display:block;margin-bottom:8px;"></i><h4 style="color:var(--text);margin-bottom:6px;">SMS OTP</h4><p style="font-size:0.82rem;">One-time passwords sent via SMS. Simple but vulnerable to SIM swapping.</p></div>
+            <div class="card" style="text-align:center;padding:16px;"><i class="fas fa-mobile-alt" style="color:var(--success);font-size:1.5rem;display:block;margin-bottom:8px;"></i><h4 style="color:var(--text);margin-bottom:6px;">TOTP Apps</h4><p style="font-size:0.82rem;">Google Authenticator, Authy. Time-based codes, much more secure than SMS.</p></div>
+            <div class="card" style="text-align:center;padding:16px;"><i class="fas fa-key" style="color:var(--warning);font-size:1.5rem;display:block;margin-bottom:8px;"></i><h4 style="color:var(--text);margin-bottom:6px;">Hardware Keys</h4><p style="font-size:0.82rem;">YubiKey, FIDO2. The most secure MFA option, phishing-resistant.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pen Testing Tab -->
+      <div id="tab-pentest" class="tab-pane">
+        <div class="alert alert-warning" style="margin-bottom:20px;"><i class="fas fa-exclamation-triangle"></i> <strong>Ethical Use Only:</strong> Penetration testing must only be performed on systems you own or have explicit written permission to test.</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+          <div class="card">
+            <h3 style="color:var(--text);margin-bottom:16px;"><i class="fas fa-search" style="color:var(--primary);margin-right:8px;"></i>Reconnaissance</h3>
+            <p style="margin-bottom:14px;">The first phase of pen testing — gather information about the target without active interaction.</p>
+            <div class="checklist">
+              <div class="check-item"><i class="fas fa-terminal" style="color:var(--primary);"></i>Passive OSINT: Shodan, WHOIS, DNS enumeration</div>
+              <div class="check-item"><i class="fas fa-terminal" style="color:var(--primary);"></i>Active scanning: Nmap port & service discovery</div>
+              <div class="check-item"><i class="fas fa-terminal" style="color:var(--primary);"></i>Web fingerprinting: Wappalyzer, WhatWeb</div>
+              <div class="check-item"><i class="fas fa-terminal" style="color:var(--primary);"></i>Directory enumeration: Gobuster, Dirb</div>
+            </div>
+            <div class="code-block" style="margin-top:14px;">
+<span class="comment"># Nmap basic scan</span>
+<span class="good">nmap -sV -sC -p- target.com</span>
+<span class="comment"># Service version detection</span>
+<span class="good">nmap -sV --version-intensity 5 target.com</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3 style="color:var(--text);margin-bottom:16px;"><i class="fas fa-bug" style="color:var(--danger);margin-right:8px;"></i>Common Attack Vectors</h3>
+            <div class="checklist">
+              <div class="check-item"><i class="fas fa-times-circle" style="color:var(--danger);"></i>SQL Injection — manipulate database queries</div>
+              <div class="check-item"><i class="fas fa-times-circle" style="color:var(--danger);"></i>XSS — inject malicious scripts into web pages</div>
+              <div class="check-item"><i class="fas fa-times-circle" style="color:var(--danger);"></i>CSRF — force users to perform unintended actions</div>
+              <div class="check-item"><i class="fas fa-times-circle" style="color:var(--danger);"></i>Directory traversal — access restricted files</div>
+              <div class="check-item"><i class="fas fa-times-circle" style="color:var(--danger);"></i>Broken authentication — bypass login systems</div>
+              <div class="check-item"><i class="fas fa-times-circle" style="color:var(--danger);"></i>Insecure deserialization — execute arbitrary code</div>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:20px;">
+          <h3 style="color:var(--text);margin-bottom:16px;"><i class="fas fa-file-alt" style="color:var(--success);margin-right:8px;"></i>Pen Testing Methodology</h3>
+          <div style="display:flex;gap:0;overflow-x:auto;">
+            <div style="text-align:center;padding:20px 24px;border-right:1px solid var(--border);min-width:140px;"><div style="font-size:1.8rem;margin-bottom:10px;">🔍</div><h4 style="color:var(--primary);font-size:0.82rem;margin-bottom:6px;">RECON</h4><p style="font-size:0.78rem;">Information gathering</p></div>
+            <div style="text-align:center;padding:20px 24px;border-right:1px solid var(--border);min-width:140px;"><div style="font-size:1.8rem;margin-bottom:10px;">🗺️</div><h4 style="color:var(--warning);font-size:0.82rem;margin-bottom:6px;">SCAN</h4><p style="font-size:0.78rem;">Port & vulnerability scanning</p></div>
+            <div style="text-align:center;padding:20px 24px;border-right:1px solid var(--border);min-width:140px;"><div style="font-size:1.8rem;margin-bottom:10px;">⚔️</div><h4 style="color:var(--danger);font-size:0.82rem;margin-bottom:6px;">EXPLOIT</h4><p style="font-size:0.78rem;">Exploit identified vulnerabilities</p></div>
+            <div style="text-align:center;padding:20px 24px;border-right:1px solid var(--border);min-width:140px;"><div style="font-size:1.8rem;margin-bottom:10px;">🏴</div><h4 style="color:var(--accent);font-size:0.82rem;margin-bottom:6px;">POST-EXPLOIT</h4><p style="font-size:0.78rem;">Escalate & pivot</p></div>
+            <div style="text-align:center;padding:20px 24px;min-width:140px;"><div style="font-size:1.8rem;margin-bottom:10px;">📋</div><h4 style="color:var(--success);font-size:0.82rem;margin-bottom:6px;">REPORT</h4><p style="font-size:0.78rem;">Document findings & mitigations</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Networking Tab -->
+      <div id="tab-network" class="tab-pane">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+          <div class="card">
+            <h3 style="color:var(--text);margin-bottom:16px;"><i class="fas fa-network-wired" style="color:var(--primary);margin-right:8px;"></i>Network Security Basics</h3>
+            <div class="checklist">
+              <div class="check-item"><i class="fas fa-check-circle"></i>Always use HTTPS (TLS 1.2+) for all communications</div>
+              <div class="check-item"><i class="fas fa-check-circle"></i>Configure firewalls to deny all, allow only required ports</div>
+              <div class="check-item"><i class="fas fa-check-circle"></i>Use VPNs for remote access to internal networks</div>
+              <div class="check-item"><i class="fas fa-check-circle"></i>Implement network segmentation and VLANs</div>
+              <div class="check-item"><i class="fas fa-check-circle"></i>Monitor traffic with IDS/IPS systems</div>
+              <div class="check-item"><i class="fas fa-check-circle"></i>Regularly audit firewall rules and network access</div>
+            </div>
+          </div>
+          <div class="card">
+            <h3 style="color:var(--text);margin-bottom:16px;"><i class="fas fa-shield-virus" style="color:var(--accent);margin-right:8px;"></i>API Security</h3>
+            <div class="checklist">
+              <div class="check-item"><i class="fas fa-check-circle"></i>Authenticate every API endpoint — no public endpoints by default</div>
+              <div class="check-item"><i class="fas fa-check-circle"></i>Implement rate limiting to prevent abuse</div>
+              <div class="check-item"><i class="fas fa-check-circle"></i>Validate and sanitize ALL input on the server side</div>
+              <div class="check-item"><i class="fas fa-check-circle"></i>Use HTTPS only — never expose APIs over HTTP</div>
+              <div class="check-item"><i class="fas fa-check-circle"></i>Implement proper CORS policies</div>
+              <div class="check-item"><i class="fas fa-check-circle"></i>Log and monitor all API access</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="../../js/particles.js"></script>
+<script src="../../js/app.js"></script>
+<script>
+const owasp = [
+  { num:'A01', title:'Broken Access Control', severity:'Critical', color:'var(--danger)', icon:'fas fa-unlock', desc:'Restrictions on what authenticated users are allowed to do are not properly enforced.', fix:'Implement role-based access control (RBAC), deny by default, validate permissions on every request.', code:{ bad:"app.get('/admin', (req,res) => res.send(adminPanel));", good:"app.get('/admin', authMiddleware, adminOnly, (req,res) => res.send(adminPanel));" } },
+  { num:'A02', title:'Cryptographic Failures', severity:'Critical', color:'var(--danger)', icon:'fas fa-lock-open', desc:'Data transmitted or stored without adequate encryption, exposing sensitive information.', fix:'Use TLS for all data in transit. Hash passwords with bcrypt/Argon2. Encrypt sensitive data at rest with AES-256.', code:{ bad:"db.save({ password: req.body.password });", good:"const hash = await bcrypt.hash(req.body.password, 12);\ndb.save({ password: hash });" } },
+  { num:'A03', title:'SQL Injection', severity:'High', color:'var(--accent)', icon:'fas fa-database', desc:'Malicious SQL queries inserted into application input fields to manipulate the database.', fix:'Use parameterized queries / prepared statements. Never concatenate user input into SQL strings.', code:{ bad:"db.query('SELECT * FROM users WHERE id=' + req.params.id);", good:"db.query('SELECT * FROM users WHERE id=?', [req.params.id]);" } },
+  { num:'A07', title:'Identification & Auth Failures', severity:'High', color:'var(--accent)', icon:'fas fa-user-lock', desc:'Weaknesses in authentication implementation such as weak passwords, missing MFA, or insecure session management.', fix:'Enforce strong passwords, implement MFA, use secure session management, limit failed login attempts.', code:{ bad:"if(user.password === req.body.password) login();", good:"const valid = await bcrypt.compare(req.body.password, user.passwordHash);\nif(valid) login();" } },
+  { num:'A05', title:'Security Misconfiguration', severity:'Medium', color:'var(--warning)', icon:'fas fa-cog', desc:'Insecure default settings, unnecessary features enabled, unpatched systems, or exposed error messages.', fix:'Disable debug mode in production, keep all dependencies updated, remove unnecessary features, hide error details.', code:{ bad:"app.use(errorHandler({ showStack: true }));", good:"app.use((err,req,res,next) => {\n  res.status(500).json({ error: 'Internal Server Error' });\n});" } },
+];
+
+document.getElementById('owaspList').innerHTML = owasp.map(v => `
+  <div class="vuln-card">
+    <div class="vuln-header" onclick="toggleVuln(this)">
+      <div class="vuln-icon" style="background:${v.color}22;color:${v.color};"><i class="${v.icon}"></i></div>
+      <div style="flex:1;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+          <span style="font-family:var(--font-mono);font-size:0.78rem;color:${v.color};">${v.num}</span>
+          <h4 style="color:var(--text);font-size:0.92rem;">${v.title}</h4>
+        </div>
+        <div class="severity"><span class="badge ${v.severity==='Critical'?'badge-danger':v.severity==='High'?'badge-warning':'badge-purple'}">${v.severity}</span></div>
+      </div>
+      <i class="fas fa-chevron-down" style="color:var(--text-muted);transition:transform 0.3s;"></i>
+    </div>
+    <div class="vuln-body">
+      <p style="margin-bottom:12px;font-size:0.88rem;">${v.desc}</p>
+      <div class="alert alert-success" style="margin-bottom:12px;font-size:0.85rem;"><i class="fas fa-shield-alt"></i> <strong>Fix:</strong> ${v.fix}</div>
+      <div class="code-block">
+<span class="comment">// ❌ Vulnerable Code</span>
+<span class="bad">${v.code.bad}</span>
+
+<span class="comment">// ✅ Secure Code</span>
+<span class="good">${v.code.good}</span>
+      </div>
+    </div>
+  </div>`).join('');
+
+function toggleVuln(header) {
+  const body = header.nextElementSibling;
+  const icon = header.querySelector('.fa-chevron-down');
+  body.classList.toggle('open');
+  icon.style.transform = body.classList.contains('open') ? 'rotate(180deg)' : '';
+}
+</script>
+</body>
+</html>

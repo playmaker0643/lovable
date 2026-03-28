@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Assignments | Admin | CodeBreakers</title>
+  <link rel="stylesheet" href="../../css/style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    .assign-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px;transition:var(--transition);margin-bottom:14px;}
+    .assign-card:hover{border-color:var(--border-glow);}
+    .submission-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+    .submission-item:last-child{border-bottom:none;}
+  </style>
+</head>
+<body>
+<canvas id="particles-canvas"></canvas>
+<div class="app-layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header"><div class="nav-logo"><div class="logo-icon"><i class="fas fa-code"></i></div><span class="logo-text">Code<span class="accent">Breakers</span></span></div></div>
+    <nav class="sidebar-nav"><ul>
+      <li><a href="dashboard.html" class="sidebar-link"><i class="fas fa-th-large"></i> Dashboard</a></li>
+      <li><a href="students.html" class="sidebar-link"><i class="fas fa-users"></i> Students</a></li>
+      <li><a href="courses.html" class="sidebar-link"><i class="fas fa-book"></i> Courses</a></li>
+      <li><a href="lessons.html" class="sidebar-link"><i class="fas fa-video"></i> Lessons</a></li>
+      <li><a href="exams.html" class="sidebar-link"><i class="fas fa-file-alt"></i> Exams</a></li>
+      <li><a href="assignments.html" class="sidebar-link active"><i class="fas fa-tasks"></i> Assignments</a></li>
+      <li><a href="grades.html" class="sidebar-link"><i class="fas fa-star"></i> Grades</a></li>
+      <li><a href="leaderboard.html" class="sidebar-link"><i class="fas fa-trophy"></i> Leaderboard</a></li>
+      <li><a href="attendance.html" class="sidebar-link"><i class="fas fa-calendar-check"></i> Attendance</a></li>
+      <li><a href="messages.html" class="sidebar-link"><i class="fas fa-comments"></i> Messages</a></li>
+      <li><a href="#" class="sidebar-link" onclick="event.preventDefault();Auth.logoutAdmin()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+    </ul></nav>
+  </aside>
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-left">
+        <button id="sidebarToggle" style="background:none;border:none;color:var(--text-muted);font-size:1.2rem;cursor:pointer;"><i class="fas fa-bars"></i></button>
+        <span class="topbar-title">Assignment Management</span>
+      </div>
+      <div class="topbar-right">
+        <button class="btn btn-primary btn-sm" onclick="openModal('createAssignModal')"><i class="fas fa-plus"></i> New Assignment</button>
+      </div>
+    </div>
+    <div class="page-content">
+      <div class="stat-cards" style="margin-bottom:24px;">
+        <div class="stat-card"><div class="stat-card-icon icon-purple"><i class="fas fa-tasks"></i></div><div class="stat-card-info"><p>Total Assignments</p><h3>24</h3></div></div>
+        <div class="stat-card"><div class="stat-card-icon icon-green"><i class="fas fa-check-circle"></i></div><div class="stat-card-info"><p>Submitted</p><h3>1,840</h3></div></div>
+        <div class="stat-card"><div class="stat-card-icon icon-orange"><i class="fas fa-clock"></i></div><div class="stat-card-info"><p>Pending Review</p><h3>47</h3></div></div>
+        <div class="stat-card"><div class="stat-card-icon icon-red"><i class="fas fa-exclamation-triangle"></i></div><div class="stat-card-info"><p>Overdue</p><h3>23</h3></div></div>
+      </div>
+
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="tab-all">All Assignments</button>
+        <button class="tab-btn" data-tab="tab-pending">Pending Review</button>
+        <button class="tab-btn" data-tab="tab-graded">Graded</button>
+      </div>
+
+      <div id="tab-all" class="tab-pane active" id_="">
+        <div id="assignmentsList"></div>
+      </div>
+      <div id="tab-pending" class="tab-pane">
+        <div class="card">
+          <h3 style="color:var(--text);font-size:1rem;margin-bottom:16px;">Submissions Pending Review</h3>
+          <div id="pendingList"></div>
+        </div>
+      </div>
+      <div id="tab-graded" class="tab-pane">
+        <div class="card">
+          <div class="table-wrapper">
+            <table>
+              <thead><tr><th>Student</th><th>Assignment</th><th>Submitted</th><th>Score</th><th>Feedback</th></tr></thead>
+              <tbody id="gradedTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Create Assignment Modal -->
+<div class="modal-overlay" id="createAssignModal">
+  <div class="modal" style="max-width:580px;">
+    <div class="modal-header"><h3><i class="fas fa-tasks" style="color:var(--primary);margin-right:8px;"></i>Create New Assignment</h3><button class="modal-close"><i class="fas fa-times"></i></button></div>
+    <div class="form-group"><label>Assignment Title</label><input type="text" class="form-control" placeholder="e.g. Build a Responsive Portfolio Page" required/></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div class="form-group"><label>Course</label>
+        <select class="form-control" required><option>Frontend Development</option><option>Backend Development</option><option>Cybersecurity</option></select>
+      </div>
+      <div class="form-group"><label>Due Date</label><input type="datetime-local" class="form-control" required/></div>
+    </div>
+    <div class="form-group"><label>Description / Instructions</label><textarea class="form-control" rows="4" placeholder="Detailed instructions for the assignment..."></textarea></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div class="form-group"><label>Max Score</label><input type="number" class="form-control" value="100"/></div>
+      <div class="form-group"><label>Type</label>
+        <select class="form-control"><option>Project</option><option>Quiz</option><option>Research</option><option>Code Challenge</option></select>
+      </div>
+    </div>
+    <div class="form-group"><label>Attachments</label><input type="file" class="form-control" multiple/></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('createAssignModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="createAssignment()"><i class="fas fa-plus"></i> Create Assignment</button>
+    </div>
+  </div>
+</div>
+
+<!-- Grade Submission Modal -->
+<div class="modal-overlay" id="gradeSubmissionModal">
+  <div class="modal" style="max-width:560px;">
+    <div class="modal-header"><h3><i class="fas fa-star" style="color:var(--warning);margin-right:8px;"></i>Grade Submission</h3><button class="modal-close"><i class="fas fa-times"></i></button></div>
+    <div id="submissionDetails"></div>
+    <div class="form-group" style="margin-top:16px;"><label>Score (out of 100)</label><input type="number" class="form-control" id="gradeScore" min="0" max="100" placeholder="e.g. 85"/></div>
+    <div class="form-group"><label>Feedback</label><textarea class="form-control" id="gradeFeedback" rows="3" placeholder="Constructive feedback for the student..."></textarea></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('gradeSubmissionModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="gradeSubmission()"><i class="fas fa-check"></i> Submit Grade</button>
+    </div>
+  </div>
+</div>
+
+<script src="../../js/particles.js"></script>
+<script src="../../js/app.js"></script>
+<script>
+const assignments = [
+  { title:'HTML Portfolio Page', course:'Frontend', due:'Jan 20', submitted:487, total:487, pending:0, avgScore:88, status:'Closed' },
+  { title:'CSS Animation Project', course:'Frontend', due:'Feb 8', submitted:463, total:487, pending:0, avgScore:82, status:'Closed' },
+  { title:'JS Calculator App', course:'Frontend', due:'Feb 28', submitted:398, total:487, pending:12, avgScore:76, status:'Grading' },
+  { title:'Build a REST API', course:'Backend', due:'Mar 15', submitted:241, total:289, pending:28, avgScore:0, status:'Grading' },
+  { title:'Python Web Scraper', course:'Backend', due:'Apr 5', submitted:89, total:289, pending:7, avgScore:0, status:'Active' },
+  { title:'Penetration Test Report', course:'Cybersecurity', due:'Apr 20', submitted:0, total:198, pending:0, avgScore:0, status:'Active' },
+];
+
+const statusColors = { Closed:'badge-success', Grading:'badge-warning', Active:'badge-primary' };
+document.getElementById('assignmentsList').innerHTML = assignments.map(a=>`
+  <div class="assign-card">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;gap:12px;flex-wrap:wrap;">
+      <div>
+        <h4 style="color:var(--text);margin-bottom:6px;">${a.title}</h4>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <span class="badge badge-primary">${a.course}</span>
+          <span class="badge ${statusColors[a.status]}">${a.status}</span>
+          ${a.pending>0?`<span class="badge badge-warning"><i class="fas fa-clock"></i> ${a.pending} pending</span>`:''}
+        </div>
+      </div>
+      <div style="text-align:right;flex-shrink:0;">
+        <p style="font-size:0.8rem;color:var(--text-muted);">Due: ${a.due}</p>
+        <p style="font-size:1rem;font-weight:700;color:var(--primary);">${a.submitted}/${a.total} submitted</p>
+      </div>
+    </div>
+    <div style="margin-bottom:14px;">
+      <div class="progress-bar-wrap"><div class="progress-bar" style="width:${(a.submitted/a.total*100)||0}%;"></div></div>
+      <p style="font-size:0.75rem;color:var(--text-dim);margin-top:4px;">${Math.round((a.submitted/a.total*100)||0)}% submission rate</p>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-outline btn-sm" onclick="showToast('Viewing submissions','info')"><i class="fas fa-eye"></i> View</button>
+      ${a.pending>0?`<button class="btn btn-warning btn-sm" onclick="gradeAll('${a.title}')"><i class="fas fa-star"></i> Grade (${a.pending})</button>`:''}
+      <button class="btn btn-ghost btn-sm" onclick="showToast('Editing assignment','info')"><i class="fas fa-edit"></i></button>
+      <button class="btn btn-danger btn-sm" onclick="showToast('Assignment deleted','danger')"><i class="fas fa-trash"></i></button>
+    </div>
+  </div>`).join('');
+
+const pending = [
+  { student:'Ibrahim Khalil', assign:'JS Calculator App', submitted:'Mar 1', preview:'index.html, style.css, script.js' },
+  { student:'Maryam Bashir', assign:'JS Calculator App', submitted:'Mar 2', preview:'calculator.html, main.js' },
+  { student:'Yusuf Adamu', assign:'Build a REST API', submitted:'Mar 14', preview:'server.js, routes.js, package.json' },
+];
+document.getElementById('pendingList').innerHTML = pending.map(p=>`
+  <div class="submission-item">
+    <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;color:#000;flex-shrink:0;">${p.student[0]}</div>
+    <div style="flex:1;"><p style="color:var(--text);font-size:0.88rem;">${p.student}</p><p style="font-size:0.78rem;">${p.assign} — ${p.preview}</p></div>
+    <span style="font-size:0.75rem;color:var(--text-dim);white-space:nowrap;">${p.submitted}</span>
+    <button class="btn btn-primary btn-sm" onclick="showGradeModal('${p.student}','${p.assign}')"><i class="fas fa-star"></i> Grade</button>
+  </div>`).join('');
+
+const graded = [
+  { student:'Aisha Mohammed', assign:'HTML Portfolio', date:'Jan 21', score:95, feedback:'Excellent!' },
+  { student:'Fatima Zahra', assign:'CSS Animation', date:'Feb 10', score:88, feedback:'Great work!' },
+  { student:'Umar Saleh', assign:'JS Calculator', date:'Mar 3', score:97, feedback:'Outstanding!' },
+];
+document.getElementById('gradedTable').innerHTML = graded.map(g=>`
+  <tr>
+    <td>${g.student}</td><td>${g.assign}</td><td>${g.date}</td>
+    <td><strong style="color:var(--success);">${g.score}%</strong></td>
+    <td style="font-size:0.82rem;">${g.feedback}</td>
+  </tr>`).join('');
+
+function showGradeModal(student, assign) {
+  document.getElementById('submissionDetails').innerHTML = `<div class="alert alert-info"><i class="fas fa-user"></i> <strong>${student}</strong> — ${assign}</div>`;
+  openModal('gradeSubmissionModal');
+}
+function gradeAll(title) { showToast('Opening grade panel for: ' + title, 'info'); }
+function createAssignment() { showToast('Assignment created successfully!', 'success'); closeModal('createAssignModal'); }
+function gradeSubmission() {
+  const score = document.getElementById('gradeScore').value;
+  if (!score) { showToast('Please enter a score', 'warning'); return; }
+  showToast(`Grade of ${score}% submitted successfully!`, 'success');
+  closeModal('gradeSubmissionModal');
+}
+</script>
+</body>
+</html>

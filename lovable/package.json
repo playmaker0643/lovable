@@ -1,0 +1,13 @@
+{
+  "name": "codebreakers",
+  "version": "1.0.0",
+  "description": "CodeBreakers E-Learning Platform",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "cd backend && nodemon server.js",
+    "install-backend": "cd backend && npm install"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Courses | Admin | CodeBreakers</title>
+  <link rel="stylesheet" href="../../css/style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    .course-admin-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;transition:var(--transition);}
+    .course-admin-card:hover{border-color:var(--border-glow);box-shadow:var(--shadow-glow);}
+    .course-admin-thumb{height:100px;display:flex;align-items:center;justify-content:center;font-size:2.5rem;position:relative;}
+    .course-admin-body{padding:18px;}
+    .course-admin-body h4{color:var(--text);margin-bottom:8px;}
+    .course-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0;}
+    .course-stat{background:rgba(255,255,255,0.03);border-radius:var(--radius);padding:8px;text-align:center;}
+    .course-stat p{font-size:0.72rem;margin-bottom:2px;}
+    .course-stat h5{font-size:0.9rem;color:var(--text);font-family:var(--font-heading);}
+  </style>
+</head>
+<body>
+<canvas id="particles-canvas"></canvas>
+<div class="app-layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header"><div class="nav-logo"><div class="logo-icon"><i class="fas fa-code"></i></div><span class="logo-text">Code<span class="accent">Breakers</span></span></div></div>
+    <nav class="sidebar-nav"><ul>
+      <li><a href="dashboard.html" class="sidebar-link"><i class="fas fa-th-large"></i> Dashboard</a></li>
+      <li><a href="students.html" class="sidebar-link"><i class="fas fa-users"></i> Students</a></li>
+      <li><a href="courses.html" class="sidebar-link active"><i class="fas fa-book"></i> Courses</a></li>
+      <li><a href="lessons.html" class="sidebar-link"><i class="fas fa-video"></i> Lessons</a></li>
+      <li><a href="exams.html" class="sidebar-link"><i class="fas fa-file-alt"></i> Exams</a></li>
+      <li><a href="assignments.html" class="sidebar-link"><i class="fas fa-tasks"></i> Assignments</a></li>
+      <li><a href="grades.html" class="sidebar-link"><i class="fas fa-star"></i> Grades</a></li>
+      <li><a href="leaderboard.html" class="sidebar-link"><i class="fas fa-trophy"></i> Leaderboard</a></li>
+      <li><a href="attendance.html" class="sidebar-link"><i class="fas fa-calendar-check"></i> Attendance</a></li>
+      <li><a href="messages.html" class="sidebar-link"><i class="fas fa-comments"></i> Messages</a></li>
+      <li><a href="#" class="sidebar-link" onclick="event.preventDefault();Auth.logoutAdmin()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+    </ul></nav>
+  </aside>
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-left">
+        <button id="sidebarToggle" style="background:none;border:none;color:var(--text-muted);font-size:1.2rem;cursor:pointer;"><i class="fas fa-bars"></i></button>
+        <span class="topbar-title">Course Management</span>
+      </div>
+      <div class="topbar-right">
+        <button class="btn btn-primary btn-sm" onclick="openModal('createCourseModal')"><i class="fas fa-plus"></i> New Course</button>
+      </div>
+    </div>
+    <div class="page-content">
+      <div class="stat-cards" style="margin-bottom:24px;">
+        <div class="stat-card"><div class="stat-card-icon icon-blue"><i class="fas fa-book"></i></div><div class="stat-card-info"><p>Total Courses</p><h3>9</h3></div></div>
+        <div class="stat-card"><div class="stat-card-icon icon-green"><i class="fas fa-check-circle"></i></div><div class="stat-card-info"><p>Active</p><h3>7</h3></div></div>
+        <div class="stat-card"><div class="stat-card-icon icon-purple"><i class="fas fa-video"></i></div><div class="stat-card-info"><p>Total Lessons</p><h3>248</h3></div></div>
+        <div class="stat-card"><div class="stat-card-icon icon-orange"><i class="fas fa-users"></i></div><div class="stat-card-info"><p>Enrolled</p><h3>500</h3></div></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;" id="coursesGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Create Course Modal -->
+<div class="modal-overlay" id="createCourseModal">
+  <div class="modal" style="max-width:580px;">
+    <div class="modal-header"><h3><i class="fas fa-book" style="color:var(--primary);margin-right:8px;"></i>Create New Course</h3><button class="modal-close"><i class="fas fa-times"></i></button></div>
+    <div class="form-group"><label>Course Title</label><input type="text" class="form-control" placeholder="e.g. Advanced React Development" required/></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div class="form-group"><label>Category</label>
+        <select class="form-control"><option>Frontend</option><option>Backend</option><option>Cybersecurity</option><option>Full Stack</option></select>
+      </div>
+      <div class="form-group"><label>Level</label>
+        <select class="form-control"><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select>
+      </div>
+    </div>
+    <div class="form-group"><label>Description</label><textarea class="form-control" rows="3" placeholder="Course description..."></textarea></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div class="form-group"><label>Duration (hours)</label><input type="number" class="form-control" placeholder="e.g. 30" min="1"/></div>
+      <div class="form-group"><label>Status</label><select class="form-control"><option>Active</option><option>Draft</option></select></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('createCourseModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="createCourse()"><i class="fas fa-plus"></i> Create Course</button>
+    </div>
+  </div>
+</div>
+
+<script src="../../js/particles.js"></script>
+<script src="../../js/app.js"></script>
+<script>
+const courses = [
+  { emoji:'🌐', title:'HTML & CSS Fundamentals', cat:'Frontend', level:'Beginner', lessons:24, enrolled:487, avgScore:82, status:'Active', color:'rgba(0,245,255,0.08)' },
+  { emoji:'⚡', title:'JavaScript Mastery', cat:'Frontend', level:'Intermediate', lessons:36, enrolled:398, avgScore:75, status:'Active', color:'rgba(0,245,255,0.08)' },
+  { emoji:'⚛️', title:'Advanced Frontend Frameworks', cat:'Frontend', level:'Advanced', lessons:42, enrolled:201, avgScore:71, status:'Active', color:'rgba(0,245,255,0.08)' },
+  { emoji:'🟢', title:'Node.js & Express', cat:'Backend', level:'Intermediate', lessons:38, enrolled:289, avgScore:68, status:'Active', color:'rgba(123,47,247,0.1)' },
+  { emoji:'🐍', title:'Python for Developers', cat:'Backend', level:'Intermediate', lessons:40, enrolled:261, avgScore:72, status:'Active', color:'rgba(123,47,247,0.1)' },
+  { emoji:'🗄️', title:'Advanced Backend Architecture', cat:'Backend', level:'Advanced', lessons:44, enrolled:112, avgScore:65, status:'Active', color:'rgba(123,47,247,0.1)' },
+  { emoji:'🛡️', title:'Web Application Security', cat:'Cybersecurity', level:'Beginner', lessons:28, enrolled:198, avgScore:84, status:'Active', color:'rgba(255,107,53,0.08)' },
+  { emoji:'🔍', title:'Ethical Hacking & Pen Testing', cat:'Cybersecurity', level:'Intermediate', lessons:50, enrolled:154, avgScore:79, status:'Active', color:'rgba(255,107,53,0.08)' },
+  { emoji:'🔐', title:'Advanced Network Security', cat:'Cybersecurity', level:'Advanced', lessons:46, enrolled:0, avgScore:0, status:'Draft', color:'rgba(255,107,53,0.08)' },
+];
+const catColors = { Frontend:'badge-primary', Backend:'badge-purple', Cybersecurity:'badge-warning' };
+document.getElementById('coursesGrid').innerHTML = courses.map(c=>`
+  <div class="course-admin-card">
+    <div class="course-admin-thumb" style="background:${c.color};">${c.emoji}</div>
+    <div class="course-admin-body">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+        <h4>${c.title}</h4>
+        <span class="badge ${c.status==='Active'?'badge-success':'badge-warning'}" style="flex-shrink:0;margin-left:6px;">${c.status}</span>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">
+        <span class="badge ${catColors[c.cat]}">${c.cat}</span>
+        <span class="badge badge-primary">${c.level}</span>
+      </div>
+      <div class="course-stats">
+        <div class="course-stat"><p>Lessons</p><h5>${c.lessons}</h5></div>
+        <div class="course-stat"><p>Enrolled</p><h5>${c.enrolled}</h5></div>
+        <div class="course-stat"><p>Avg Score</p><h5 style="color:${c.avgScore>=70?'var(--success)':'var(--warning)'};">${c.avgScore||'—'}%</h5></div>
+        <div class="course-stat"><p>Completion</p><h5 style="color:var(--primary);">${c.enrolled?Math.floor(Math.random()*30+50)+'%':'—'}</h5></div>
+      </div>
+      <div style="display:flex;gap:6px;">
+        <a href="lessons.html" class="btn btn-outline btn-sm" style="flex:1;"><i class="fas fa-video"></i> Lessons</a>
+        <button class="btn btn-ghost btn-sm" onclick="showToast('Editing course','info')"><i class="fas fa-edit"></i></button>
+        <button class="btn btn-danger btn-sm" onclick="showToast('Course deleted','danger')"><i class="fas fa-trash"></i></button>
+      </div>
+    </div>
+  </div>`).join('');
+
+function createCourse() { showToast('Course created successfully!','success'); closeModal('createCourseModal'); }
+</script>
+</body>
+</html>

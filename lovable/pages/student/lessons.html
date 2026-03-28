@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Lessons | CodeBreakers</title>
+  <link rel="stylesheet" href="../../css/style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    .lessons-layout{display:grid;grid-template-columns:320px 1fr;gap:0;height:calc(100vh - 56px);overflow:hidden;}
+    .lessons-list{border-right:1px solid var(--border);overflow-y:auto;padding:16px;}
+    .lesson-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:var(--radius);margin-bottom:8px;cursor:pointer;transition:var(--transition);border:1px solid transparent;}
+    .lesson-item:hover{background:rgba(0,245,255,0.04);border-color:var(--border);}
+    .lesson-item.active{background:rgba(0,245,255,0.08);border-color:var(--border-glow);}
+    .lesson-item.locked{opacity:0.5;cursor:not-allowed;}
+    .lesson-num{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;font-family:var(--font-heading);flex-shrink:0;}
+    .lesson-num.done{background:var(--success);color:#000;}
+    .lesson-num.current{background:var(--primary);color:#000;}
+    .lesson-num.locked{background:rgba(255,255,255,0.06);color:var(--text-dim);border:1px solid var(--border);}
+    .lesson-info h4{font-size:0.85rem;color:var(--text);margin-bottom:3px;}
+    .lesson-info p{font-size:0.75rem;}
+    .video-player{background:#000;display:flex;align-items:center;justify-content:center;flex:none;position:relative;height:340px;border-bottom:1px solid var(--border);}
+    .video-placeholder{text-align:center;}
+    .video-controls{display:flex;align-items:center;gap:14px;padding:14px 20px;background:var(--bg-card);border-bottom:1px solid var(--border);}
+    .control-btn{background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.1rem;transition:var(--transition);}
+    .control-btn:hover{color:var(--primary);}
+    .progress-slider{flex:1;-webkit-appearance:none;height:4px;border-radius:2px;background:rgba(255,255,255,0.1);outline:none;cursor:pointer;}
+    .progress-slider::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--primary);cursor:pointer;}
+    .lesson-content-area{flex:1;overflow-y:auto;padding:24px;}
+    .lesson-view{display:flex;flex-direction:column;height:100%;overflow:hidden;}
+    .tabs-sm{display:flex;gap:4px;border-bottom:1px solid var(--border);padding:0 20px;background:var(--bg-card);}
+    .tab-sm{padding:9px 16px;font-size:0.78rem;font-family:var(--font-heading);letter-spacing:1px;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;transition:var(--transition);}
+    .tab-sm.active{color:var(--primary);border-bottom-color:var(--primary);}
+    .note-area{width:100%;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:var(--radius);padding:14px;color:var(--text);font-family:var(--font-main);font-size:0.88rem;resize:vertical;min-height:120px;outline:none;}
+    .note-area:focus{border-color:var(--primary);}
+  </style>
+</head>
+<body>
+<canvas id="particles-canvas"></canvas>
+<div class="app-layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header"><div class="nav-logo"><div class="logo-icon"><i class="fas fa-code"></i></div><span class="logo-text">Code<span class="accent">Breakers</span></span></div></div>
+    <nav class="sidebar-nav"><ul>
+      <li><a href="dashboard.html" class="sidebar-link"><i class="fas fa-th-large"></i> Dashboard</a></li>
+      <li><a href="lessons.html" class="sidebar-link active"><i class="fas fa-video"></i> My Lessons</a></li>
+      <li><a href="exams.html" class="sidebar-link"><i class="fas fa-file-alt"></i> Exams</a></li>
+      <li><a href="grades.html" class="sidebar-link"><i class="fas fa-star"></i> My Grades</a></li>
+      <li><a href="attendance.html" class="sidebar-link"><i class="fas fa-calendar-check"></i> Attendance</a></li>
+      <li><a href="sandbox.html" class="sidebar-link"><i class="fas fa-terminal"></i> Code Sandbox</a></li>
+      <li><a href="security.html" class="sidebar-link"><i class="fas fa-shield-alt"></i> Security Training</a></li>
+      <li><a href="leaderboard.html" class="sidebar-link"><i class="fas fa-trophy"></i> Leaderboard</a></li>
+      <li><a href="messages.html" class="sidebar-link"><i class="fas fa-comments"></i> Messages</a></li>
+      <li><a href="#" class="sidebar-link" onclick="event.preventDefault();Auth.logoutStudent()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+    </ul></nav>
+  </aside>
+  <div class="main-content" style="overflow:hidden;">
+    <div class="topbar">
+      <div class="topbar-left">
+        <button id="sidebarToggle" style="background:none;border:none;color:var(--text-muted);font-size:1.2rem;cursor:pointer;"><i class="fas fa-bars"></i></button>
+        <span class="topbar-title">My Lessons — Frontend Development</span>
+      </div>
+      <div class="topbar-right">
+        <div style="display:flex;align-items:center;gap:8px;font-size:0.85rem;">
+          <span style="color:var(--text-muted);">Progress:</span>
+          <div class="progress-bar-wrap" style="width:120px;"><div class="progress-bar" style="width:72%;"></div></div>
+          <span style="color:var(--primary);font-weight:700;">72%</span>
+        </div>
+      </div>
+    </div>
+    <div class="lessons-layout">
+      <!-- Lesson List -->
+      <div class="lessons-list">
+        <div style="margin-bottom:14px;">
+          <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:8px;font-family:var(--font-heading);letter-spacing:1px;">FRONTEND DEVELOPMENT</p>
+          <div class="progress-bar-wrap"><div class="progress-bar" style="width:72%;"></div></div>
+          <p style="font-size:0.75rem;color:var(--text-dim);margin-top:4px;">18 of 24 lessons completed</p>
+        </div>
+        <div id="lessonListContainer"></div>
+      </div>
+
+      <!-- Lesson Viewer -->
+      <div class="lesson-view">
+        <!-- Real HTML5 Video Player -->
+        <div class="video-player" id="videoPlayer" style="background:#000;position:relative;">
+          <!-- Actual HTML5 video element -->
+          <video id="realVideo"
+            style="width:100%;height:100%;display:none;object-fit:contain;"
+            preload="metadata"
+            playsinline
+            controlsList="nodownload">
+          </video>
+          <!-- Overlay shown when no video URL -->
+          <div class="video-placeholder" id="videoPlaceholder" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(0,245,255,0.04),rgba(123,47,247,0.06));">
+            <div style="width:80px;height:80px;border-radius:50%;background:rgba(0,245,255,0.1);border:2px solid var(--border-glow);display:flex;align-items:center;justify-content:center;margin-bottom:16px;cursor:pointer;" onclick="togglePlay()">
+              <i class="fas fa-play" style="color:var(--primary);font-size:1.8rem;margin-left:4px;" id="playIcon"></i>
+            </div>
+            <h3 style="color:var(--text);margin-bottom:8px;" id="videoTitle">JavaScript Fundamentals</h3>
+            <p style="font-size:0.85rem;color:var(--text-muted);"><i class="fas fa-clock" style="color:var(--primary);margin-right:6px;"></i><span id="durationDisplay">75 minutes</span></p>
+          </div>
+          <!-- Click overlay to play/pause when video is playing -->
+          <div id="videoClickOverlay" style="display:none;position:absolute;inset:0;cursor:pointer;z-index:5;" onclick="togglePlay()"></div>
+          <!-- Center play/pause flash -->
+          <div id="playFlash" style="display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:70px;height:70px;border-radius:50%;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;pointer-events:none;z-index:10;">
+            <i id="playFlashIcon" class="fas fa-play" style="color:#fff;font-size:1.6rem;margin-left:4px;"></i>
+          </div>
+          <!-- Buffering spinner -->
+          <div id="bufferSpinner" style="display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10;">
+            <i class="fas fa-spinner fa-spin" style="color:var(--primary);font-size:2rem;"></i>
+          </div>
+        </div>
+        <!-- Video Controls -->
+        <div class="video-controls">
+          <button class="control-btn" onclick="prevLesson()" title="Previous lesson"><i class="fas fa-step-backward"></i></button>
+          <button class="control-btn" id="playPauseBtn" onclick="togglePlay()" title="Play/Pause"><i class="fas fa-play"></i></button>
+          <button class="control-btn" onclick="nextLesson()" title="Next lesson"><i class="fas fa-step-forward"></i></button>
+          <input type="range" class="progress-slider" id="videoProgress" value="0" min="0" max="100" step="0.1" oninput="seekVideo(this.value)"/>
+          <span style="font-size:0.8rem;color:var(--text-muted);white-space:nowrap;" id="timeDisplay">0:00 / 0:00</span>
+          <!-- Volume -->
+          <button class="control-btn" id="muteBtn" onclick="toggleMute()" title="Mute/Unmute"><i class="fas fa-volume-up"></i></button>
+          <input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="1" style="-webkit-appearance:none;width:70px;height:4px;border-radius:2px;background:rgba(255,255,255,0.15);outline:none;cursor:pointer;" oninput="setVolume(this.value)"/>
+          <!-- Playback speed -->
+          <select id="speedSelect" onchange="setSpeed(this.value)" style="background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.75rem;padding:3px 6px;cursor:pointer;outline:none;">
+            <option value="0.5">0.5×</option>
+            <option value="0.75">0.75×</option>
+            <option value="1" selected>1×</option>
+            <option value="1.25">1.25×</option>
+            <option value="1.5">1.5×</option>
+            <option value="2">2×</option>
+          </select>
+          <!-- Fullscreen -->
+          <button class="control-btn" onclick="toggleFullscreen()" title="Fullscreen" style="margin-left:4px;"><i class="fas fa-expand" id="fsIcon"></i></button>
+        </div>
+        <!-- Tabs -->
+        <div class="tabs-sm">
+          <div class="tab-sm active" onclick="switchLessonTab('overview',this)">Overview</div>
+          <div class="tab-sm" onclick="switchLessonTab('resources',this)">Resources</div>
+          <div class="tab-sm" onclick="switchLessonTab('notes',this)">My Notes</div>
+          <div class="tab-sm" onclick="switchLessonTab('discussion',this)">Discussion</div>
+        </div>
+        <!-- Content -->
+        <div class="lesson-content-area" id="lessonContent">
+          <div id="overview">
+            <h3 style="color:var(--text);margin-bottom:12px;" id="lessonTitle">JavaScript Fundamentals</h3>
+            <p style="margin-bottom:16px;" id="lessonDesc">In this lesson, you will learn the core concepts of JavaScript including variables, data types, functions, conditionals, loops, and ES6+ syntax. This is the foundation of all web interactivity.</p>
+            <h4 style="color:var(--text);margin-bottom:10px;font-size:0.9rem;">What You'll Learn</h4>
+            <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px;" id="learningPoints"></div>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;">
+              <a href="sandbox.html" class="btn btn-primary btn-sm"><i class="fas fa-terminal"></i> Practice in Sandbox</a>
+              <button class="btn btn-outline btn-sm" onclick="markComplete()"><i class="fas fa-check"></i> Mark as Complete</button>
+              <button class="btn btn-ghost btn-sm" onclick="nextLesson()"><i class="fas fa-arrow-right"></i> Next Lesson</button>
+            </div>
+          </div>
+          <div id="resources" style="display:none;">
+            <h4 style="color:var(--text);margin-bottom:14px;">Lesson Resources</h4>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div class="card" style="display:flex;align-items:center;gap:14px;padding:14px;">
+                <i class="fas fa-file-pdf" style="color:var(--danger);font-size:1.5rem;"></i>
+                <div style="flex:1;"><p style="color:var(--text);font-size:0.88rem;">JavaScript Fundamentals Cheatsheet</p><p style="font-size:0.78rem;">PDF • 2.4 MB</p></div>
+                <button class="btn btn-outline btn-sm"><i class="fas fa-download"></i></button>
+              </div>
+              <div class="card" style="display:flex;align-items:center;gap:14px;padding:14px;">
+                <i class="fas fa-file-code" style="color:var(--primary);font-size:1.5rem;"></i>
+                <div style="flex:1;"><p style="color:var(--text);font-size:0.88rem;">Starter Code Files</p><p style="font-size:0.78rem;">ZIP • 124 KB</p></div>
+                <button class="btn btn-outline btn-sm"><i class="fas fa-download"></i></button>
+              </div>
+              <div class="card" style="display:flex;align-items:center;gap:14px;padding:14px;">
+                <i class="fas fa-external-link-alt" style="color:var(--success);font-size:1.5rem;"></i>
+                <div style="flex:1;"><p style="color:var(--text);font-size:0.88rem;">MDN JavaScript Reference</p><p style="font-size:0.78rem;">External Link</p></div>
+                <a href="https://developer.mozilla.org" target="_blank" class="btn btn-outline btn-sm"><i class="fas fa-external-link-alt"></i></a>
+              </div>
+            </div>
+          </div>
+          <div id="notes" style="display:none;">
+            <h4 style="color:var(--text);margin-bottom:14px;">My Notes</h4>
+            <textarea class="note-area" id="notesArea" placeholder="Take notes here while watching the lesson..."></textarea>
+            <button class="btn btn-primary btn-sm" style="margin-top:12px;" onclick="saveNotes()"><i class="fas fa-save"></i> Save Notes</button>
+          </div>
+          <div id="discussion" style="display:none;">
+            <h4 style="color:var(--text);margin-bottom:14px;">Lesson Discussion</h4>
+            <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:16px;" id="discussionList"></div>
+            <div style="display:flex;gap:10px;">
+              <textarea class="note-area" id="commentInput" placeholder="Ask a question or share your thoughts..." rows="2" style="min-height:60px;"></textarea>
+              <button class="btn btn-primary" style="align-self:flex-end;" onclick="postComment()"><i class="fas fa-paper-plane"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="../../js/particles.js"></script>
+<script src="../../js/app.js"></script>
+<script>
+const lessons = [
+  { num:1, title:'Intro to HTML', duration:'45 min', status:'done', desc:'Learn HTML document structure, semantic elements, and forms.', points:['HTML5 document structure','Semantic elements (header, nav, main, footer)','Forms and input types','Accessibility best practices'] },
+  { num:2, title:'CSS Styling Basics', duration:'52 min', status:'done', desc:'Master CSS selectors, the box model, typography, and colours.', points:['CSS selectors and specificity','Box model (margin, padding, border)','Typography and Google Fonts','Colors and gradients'] },
+  { num:3, title:'Responsive Design & Flexbox', duration:'68 min', status:'done', desc:'Build responsive layouts using Flexbox and CSS Grid.', points:['Flexbox container and item properties','CSS Grid layout system','Media queries for responsiveness','Mobile-first design approach'] },
+  { num:4, title:'JavaScript Fundamentals', duration:'75 min', status:'current', desc:'In this lesson, you will learn the core concepts of JavaScript including variables, data types, functions, conditionals, loops, and ES6+ syntax.', points:['Variables: var, let, const','Data types and type coercion','Functions and arrow functions','Conditionals and loops','ES6+ features (destructuring, spread, template literals)'] },
+  { num:5, title:'DOM Manipulation', duration:'60 min', status:'locked', desc:'Learn to interact with HTML elements using JavaScript DOM APIs.', points:['Selecting DOM elements','Event listeners and handlers','Modifying DOM content and styles','Creating and removing elements'] },
+  { num:6, title:'Async JavaScript', duration:'55 min', status:'locked', desc:'Master asynchronous programming with callbacks, promises, and async/await.', points:['Callbacks and callback hell','Promises and .then()/.catch()','Async/await syntax','Fetch API and AJAX'] },
+  { num:7, title:'Local Storage & State', duration:'40 min', status:'locked', desc:'Learn to persist data in the browser using Web Storage APIs.', points:['localStorage and sessionStorage','JSON serialization','State management patterns','Building a persistent app'] },
+  { num:8, title:'APIs & Fetch', duration:'65 min', status:'locked', desc:'Connect your frontend to real-world APIs using the Fetch API.', points:['REST API concepts','Fetch API usage','Handling API responses','Authentication headers'] },
+];
+
+let activeLesson = 3;
+let isPlaying = false;
+let progressInterval;
+
+function renderLessonList() {
+  const icons = { done:'<i class="fas fa-check" style="color:#000;font-size:0.75rem;"></i>', current:'<i class="fas fa-play" style="color:#000;font-size:0.75rem;"></i>', locked:'<i class="fas fa-lock" style="font-size:0.75rem;"></i>' };
+  document.getElementById('lessonListContainer').innerHTML = lessons.map((l, i) => `
+    <div class="lesson-item ${i === activeLesson ? 'active' : ''} ${l.status === 'locked' ? 'locked' : ''}" onclick="${l.status !== 'locked' ? `selectLesson(${i})` : "showToast('Complete previous lessons first','warning')"}">
+      <div class="lesson-num ${l.status}">${icons[l.status]}</div>
+      <div class="lesson-info">
+        <h4>${l.title}</h4>
+        <p><i class="fas fa-clock" style="color:var(--primary);margin-right:4px;"></i>${l.duration} ${l.status==='locked'?'<i class="fas fa-lock" style="color:var(--text-dim);margin-left:6px;"></i>':''}</p>
+      </div>
+    </div>`).join('');
+}
+
+function selectLesson(idx) {
+  if (lessons[idx].status === 'locked') { showToast('Complete previous lessons first', 'warning'); return; }
+
+  // Stop current playback before switching
+  if (vid.src && !vid.paused) vid.pause();
+  clearInterval(progressInterval);
+  stopAttendanceSession();
+
+  activeLesson    = idx;
+  lastReportedPct = 0;
+  watchedSeconds  = 0;
+
+  const l = lessons[idx];
+
+  // Load into real video player (uses videoUrl from DB if available)
+  loadVideo(l);
+
+  // Update lesson info panel
+  document.getElementById('lessonTitle').textContent = l.title;
+  document.getElementById('lessonDesc').textContent  = l.desc || '';
+  document.getElementById('learningPoints').innerHTML = (l.points||[]).map(p =>
+    `<div style="display:flex;align-items:flex-start;gap:8px;">
+      <i class="fas fa-check-circle" style="color:var(--primary);margin-top:2px;flex-shrink:0;"></i>
+      <span style="font-size:0.88rem;color:var(--text-muted);">${p}</span>
+    </div>`).join('');
+
+  // Try to fetch real lesson data from API (to get videoUrl)
+  const token = localStorage.getItem('cb_token');
+  if (token && l._id) {
+    fetch(`/api/lessons/${l._id}`, {
+      headers: { 'Authorization': 'Bearer ' + token }
+    }).then(r => r.json()).then(data => {
+      if (data.success && data.data.videoUrl) {
+        lessons[idx].videoUrl = data.data.videoUrl;
+        loadVideo(lessons[idx]);
+      }
+    }).catch(() => {});
+  }
+
+  renderLessonList();
+}
+
+// ── Attendance tracking variables ──────────────────────────────
+let watchedSeconds  = 0;
+let totalSeconds    = 0;
+let attendanceTimer = null;
+let lastReportedPct = 0;
+
+// ── Get reference to real HTML5 video element ──────────────────
+const vid = document.getElementById('realVideo');
+
+// ── Load video into player ─────────────────────────────────────
+function loadVideo(lesson) {
+  const placeholder = document.getElementById('videoPlaceholder');
+  const overlay     = document.getElementById('videoClickOverlay');
+
+  if (lesson.videoUrl) {
+    // Real Cloudinary URL available
+    vid.src      = lesson.videoUrl;
+    vid.style.display = 'block';
+    placeholder.style.display = 'none';
+    overlay.style.display     = 'block';
+  } else {
+    // No video yet — show placeholder
+    vid.src = '';
+    vid.style.display = 'none';
+    placeholder.style.display = 'flex';
+    overlay.style.display     = 'none';
+  }
+
+  // Update title and duration display
+  document.getElementById('videoTitle').textContent    = lesson.title;
+  document.getElementById('durationDisplay').textContent = lesson.duration || '';
+  document.getElementById('videoProgress').value       = 0;
+  document.getElementById('timeDisplay').textContent   = '0:00 / 0:00';
+  document.getElementById('playPauseBtn').innerHTML    = '<i class="fas fa-play"></i>';
+  document.getElementById('playIcon').className        = 'fas fa-play';
+  watchedSeconds  = 0;
+  totalSeconds    = 0;
+  lastReportedPct = 0;
+}
+
+// ── HTML5 video event listeners ───────────────────────────────
+vid.addEventListener('loadedmetadata', () => {
+  totalSeconds = Math.floor(vid.duration);
+  document.getElementById('timeDisplay').textContent =
+    `0:00 / ${fmtTime(totalSeconds)}`;
+});
+
+vid.addEventListener('timeupdate', () => {
+  if (!vid.duration) return;
+  watchedSeconds  = Math.floor(vid.currentTime);
+  const pct       = (vid.currentTime / vid.duration) * 100;
+  document.getElementById('videoProgress').value = pct;
+  document.getElementById('timeDisplay').textContent =
+    `${fmtTime(watchedSeconds)} / ${fmtTime(Math.floor(vid.duration))}`;
+
+  // Report attendance every 10% milestone
+  const milestone = Math.floor(pct / 10) * 10;
+  if (milestone > lastReportedPct) {
+    lastReportedPct = milestone;
+    const lesson = lessons[activeLesson];
+    reportAttendance(lesson._id || activeLesson, watchedSeconds, Math.floor(vid.duration), false);
+  }
+});
+
+vid.addEventListener('ended', () => {
+  isPlaying = false;
+  document.getElementById('playPauseBtn').innerHTML = '<i class="fas fa-play"></i>';
+  document.getElementById('playIcon').className     = 'fas fa-play';
+  stopAttendanceSession();
+  const lesson = lessons[activeLesson];
+  reportAttendance(lesson._id || activeLesson, Math.floor(vid.duration), Math.floor(vid.duration), true);
+  showToast('🎉 Lesson complete! Next lesson unlocked.', 'success');
+  // Auto-mark complete in UI
+  markComplete();
+});
+
+vid.addEventListener('waiting',  () => { document.getElementById('bufferSpinner').style.display = 'flex'; });
+vid.addEventListener('playing',  () => { document.getElementById('bufferSpinner').style.display = 'none'; });
+vid.addEventListener('pause',    () => { isPlaying = false; document.getElementById('playPauseBtn').innerHTML = '<i class="fas fa-play"></i>'; });
+vid.addEventListener('play',     () => { isPlaying = true;  document.getElementById('playPauseBtn').innerHTML = '<i class="fas fa-pause"></i>'; });
+
+// ── Toggle play/pause ─────────────────────────────────────────
+function togglePlay() {
+  const lesson = lessons[activeLesson];
+  if (lesson.status === 'locked') {
+    showToast('Complete the previous lesson first!', 'warning');
+    return;
+  }
+
+  if (vid.src && vid.src !== window.location.href) {
+    // Real video player
+    if (vid.paused) {
+      vid.play().catch(() => showToast('Could not play video. Check your connection.', 'danger'));
+      startAttendanceSession();
+    } else {
+      vid.pause();
+      stopAttendanceSession();
+    }
+    // Flash animation
+    flashPlayPause(!vid.paused);
+  } else {
+    // No video URL — simulate for demo
+    isPlaying = !isPlaying;
+    document.getElementById('playIcon').className     = isPlaying ? 'fas fa-pause' : 'fas fa-play';
+    document.getElementById('playPauseBtn').innerHTML = isPlaying ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
+    if (isPlaying) {
+      totalSeconds = parseInt(lesson.duration) * 60 || 4500;
+      progressInterval = setInterval(() => {
+        watchedSeconds = Math.min(watchedSeconds + 3, totalSeconds);
+        const pct = (watchedSeconds / totalSeconds) * 100;
+        document.getElementById('videoProgress').value = pct;
+        document.getElementById('timeDisplay').textContent =
+          `${fmtTime(watchedSeconds)} / ${fmtTime(totalSeconds)}`;
+        const milestone = Math.floor(pct / 10) * 10;
+        if (milestone > lastReportedPct) {
+          lastReportedPct = milestone;
+          reportAttendance(lesson._id || activeLesson, watchedSeconds, totalSeconds, false);
+        }
+        if (watchedSeconds >= totalSeconds) {
+          clearInterval(progressInterval);
+          stopAttendanceSession();
+          isPlaying = false;
+          document.getElementById('playPauseBtn').innerHTML = '<i class="fas fa-play"></i>';
+          reportAttendance(lesson._id || activeLesson, totalSeconds, totalSeconds, true);
+          showToast('🎉 Lesson complete! Next lesson unlocked.', 'success');
+          markComplete();
+        }
+      }, 500);
+      startAttendanceSession();
+    } else {
+      clearInterval(progressInterval);
+      stopAttendanceSession();
+    }
+  }
+}
+
+// ── Flash play/pause icon in center ──────────────────────────
+function flashPlayPause(playing) {
+  const flash = document.getElementById('playFlash');
+  const icon  = document.getElementById('playFlashIcon');
+  icon.className = playing ? 'fas fa-play' : 'fas fa-pause';
+  flash.style.display = 'flex';
+  flash.style.opacity = '1';
+  setTimeout(() => {
+    flash.style.transition = 'opacity 0.4s';
+    flash.style.opacity    = '0';
+    setTimeout(() => { flash.style.display = 'none'; flash.style.opacity = '1'; flash.style.transition = ''; }, 400);
+  }, 300);
+}
+
+// ── Seek video on progress bar drag ──────────────────────────
+function seekVideo(value) {
+  if (vid.src && vid.duration) {
+    vid.currentTime = (value / 100) * vid.duration;
+  }
+}
+
+// ── Volume controls ───────────────────────────────────────────
+function toggleMute() {
+  vid.muted = !vid.muted;
+  document.getElementById('muteBtn').innerHTML =
+    vid.muted ? '<i class="fas fa-volume-mute"></i>' : '<i class="fas fa-volume-up"></i>';
+}
+function setVolume(val) {
+  vid.volume = parseFloat(val);
+  vid.muted  = val == 0;
+  document.getElementById('muteBtn').innerHTML =
+    val == 0 ? '<i class="fas fa-volume-mute"></i>' : '<i class="fas fa-volume-up"></i>';
+}
+
+// ── Playback speed ────────────────────────────────────────────
+function setSpeed(val) { vid.playbackRate = parseFloat(val); }
+
+// ── Fullscreen ────────────────────────────────────────────────
+function toggleFullscreen() {
+  const player = document.getElementById('videoPlayer');
+  if (!document.fullscreenElement) {
+    (player.requestFullscreen || player.webkitRequestFullscreen || player.mozRequestFullScreen).call(player);
+    document.getElementById('fsIcon').className = 'fas fa-compress';
+  } else {
+    (document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen).call(document);
+    document.getElementById('fsIcon').className = 'fas fa-expand';
+  }
+}
+document.addEventListener('fullscreenchange', () => {
+  if (!document.fullscreenElement)
+    document.getElementById('fsIcon').className = 'fas fa-expand';
+});
+
+// ── Format seconds → M:SS ────────────────────────────────────
+function fmtTime(secs) {
+  if (!secs || isNaN(secs)) return '0:00';
+  const m = Math.floor(secs / 60);
+  const s = Math.floor(secs % 60);
+  return `${m}:${s.toString().padStart(2,'0')}`;
+}
+
+// ── Keyboard shortcuts ────────────────────────────────────────
+document.addEventListener('keydown', (e) => {
+  // Only when lesson view is focused (not typing in notes etc.)
+  if (['INPUT','TEXTAREA'].includes(e.target.tagName)) return;
+  if (e.code === 'Space')       { e.preventDefault(); togglePlay(); }
+  if (e.code === 'ArrowRight')  { if (vid.src) vid.currentTime = Math.min(vid.currentTime + 10, vid.duration); }
+  if (e.code === 'ArrowLeft')   { if (vid.src) vid.currentTime = Math.max(vid.currentTime - 10, 0); }
+  if (e.code === 'ArrowUp')     { if (vid.src) setVolume(Math.min(vid.volume + 0.1, 1)); }
+  if (e.code === 'ArrowDown')   { if (vid.src) setVolume(Math.max(vid.volume - 0.1, 0)); }
+  if (e.code === 'KeyF')        { toggleFullscreen(); }
+  if (e.code === 'KeyM')        { toggleMute(); }
+});
+
+// ── Report attendance to backend ──────────────────────────────
+async function reportAttendance(lessonId, watched, total, completed) {
+  if (!lessonId) return;
+  const token = localStorage.getItem('cb_token');
+  if (!token) return;
+  try {
+    await fetch('/api/attendance/lesson', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body:    JSON.stringify({ lessonId, watchedSeconds: watched, totalSeconds: total, completed })
+    });
+    // Also emit via Socket.io for real-time admin dashboard
+    if (window._socketRef?.connected) {
+      window._socketRef.emit('lesson:progress', {
+        lessonId,
+        progress: total > 0 ? Math.round((watched/total)*100) : 0,
+        duration: total
+      });
+    }
+  } catch (e) { /* silently fail — don't interrupt student */ }
+}
+
+// ── Attendance session heartbeat (every 30s) ─────────────────
+function startAttendanceSession() {
+  stopAttendanceSession();
+  attendanceTimer = setInterval(() => {
+    const lesson = lessons[activeLesson];
+    if (lesson && isPlaying) {
+      reportAttendance(lesson._id || activeLesson, watchedSeconds, totalSeconds, false);
+    }
+  }, 30000);
+}
+function stopAttendanceSession() {
+  if (attendanceTimer) { clearInterval(attendanceTimer); attendanceTimer = null; }
+}
+
+function stopPlay() {
+  isPlaying = false;
+  clearInterval(progressInterval);
+  stopAttendanceSession();
+  if (vid.src && !vid.paused) vid.pause();
+  document.getElementById('playIcon').className     = 'fas fa-play';
+  document.getElementById('playPauseBtn').innerHTML = '<i class="fas fa-play"></i>';
+  document.getElementById('videoProgress').value    = 0;
+  document.getElementById('timeDisplay').textContent = '0:00 / 0:00';
+  watchedSeconds = 0; lastReportedPct = 0;
+}
+
+// Report attendance when navigating away
+window.addEventListener('beforeunload', () => {
+  if (watchedSeconds > 0) {
+    const lesson = lessons[activeLesson];
+    reportAttendance(lesson?._id || activeLesson, watchedSeconds, totalSeconds, false);
+  }
+});
+
+function prevLesson() { if (activeLesson > 0) selectLesson(activeLesson - 1); }
+function nextLesson() { if (activeLesson < lessons.length - 1 && lessons[activeLesson + 1].status !== 'locked') selectLesson(activeLesson + 1); else showToast('Complete this lesson first!', 'info'); }
+function markComplete() { lessons[activeLesson].status = 'done'; renderLessonList(); showToast('Lesson marked as complete! 🎉', 'success'); if (activeLesson + 1 < lessons.length) lessons[activeLesson + 1].status = 'current'; }
+function saveNotes() { localStorage.setItem('cb_notes_' + activeLesson, document.getElementById('notesArea').value); showToast('Notes saved!', 'success'); }
+
+function switchLessonTab(tab, el) {
+  ['overview','resources','notes','discussion'].forEach(t => { document.getElementById(t).style.display = t === tab ? 'block' : 'none'; });
+  document.querySelectorAll('.tab-sm').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  if (tab === 'notes') { const saved = localStorage.getItem('cb_notes_' + activeLesson); if (saved) document.getElementById('notesArea').value = saved; }
+  if (tab === 'discussion') renderDiscussion();
+}
+
+const comments = [
+  { user:'Ibrahim K.', text:'Great lesson! The function hoisting part was confusing at first but makes sense now.', time:'2h ago' },
+  { user:'Instructor', text:'Glad it clicked! Remember to practice in the sandbox.', time:'1h ago', isInstructor:true },
+];
+function renderDiscussion() {
+  document.getElementById('discussionList').innerHTML = comments.map(c => `
+    <div style="display:flex;gap:10px;align-items:flex-start;">
+      <div style="width:32px;height:32px;border-radius:50%;background:${c.isInstructor?'linear-gradient(135deg,var(--accent),var(--secondary))':'linear-gradient(135deg,var(--primary),var(--secondary))'};display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;color:#000;flex-shrink:0;">${c.user[0]}</div>
+      <div style="flex:1;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:var(--radius);padding:12px;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+          <span style="font-size:0.82rem;color:${c.isInstructor?'var(--accent)':'var(--primary)'};font-weight:600;">${c.user}${c.isInstructor?' 👨‍🏫':''}</span>
+          <span style="font-size:0.72rem;color:var(--text-dim);">${c.time}</span>
+        </div>
+        <p style="font-size:0.85rem;color:var(--text-muted);">${c.text}</p>
+      </div>
+    </div>`).join('');
+}
+function postComment() {
+  const txt = document.getElementById('commentInput').value.trim();
+  if (!txt) return;
+  const student = Auth.getStudent() || { name: 'Student' };
+  comments.push({ user: student.name.split(' ')[0], text: txt, time: 'Just now' });
+  document.getElementById('commentInput').value = '';
+  renderDiscussion();
+  showToast('Comment posted!', 'success');
+}
+
+// ── Init ────────────────────────────────────────────────────────
+// Try to load real lessons from API first
+(async function init() {
+  const token = localStorage.getItem('cb_token');
+  const student = Auth.getStudent();
+
+  if (token && student) {
+    try {
+      // Fetch enrolled course lessons from API
+      const res = await fetch(`/api/lessons?course=${student.courseId || ''}`, {
+        headers: { 'Authorization': 'Bearer ' + token }
+      });
+      const data = await res.json();
+      if (data.success && data.data && data.data.length > 0) {
+        // Map API lessons to local format
+        lessons = data.data.map(l => ({
+          _id:      l._id,
+          num:      l.order,
+          title:    l.title,
+          duration: l.duration ? `${l.duration} min` : '—',
+          videoUrl: l.videoUrl || '',
+          desc:     l.description || '',
+          points:   [],
+          status:   l.isCompleted ? 'done' : l.isLocked ? 'locked' : 'current',
+        }));
+        // Set first non-locked lesson as active
+        const firstAvail = lessons.findIndex(l => l.status !== 'locked');
+        activeLesson = firstAvail >= 0 ? firstAvail : 0;
+      }
+    } catch (e) {
+      // Fall back to demo lessons already defined
+    }
+  }
+
+  selectLesson(activeLesson);
+  renderLessonList();
+})();
+</script>
+</body>
+</html>

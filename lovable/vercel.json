@@ -1,0 +1,53 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "backend/server.js",
+      "use": "@vercel/node",
+      "config": {
+        "maxDuration": 30,
+        "includeFiles": ["backend/**"]
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "backend/server.js"
+    },
+    {
+      "src": "/socket.io/(.*)",
+      "dest": "backend/server.js"
+    },
+    {
+      "src": "/js/(.*)",
+      "headers": { "Cache-Control": "public, max-age=3600" },
+      "dest": "/js/$1"
+    },
+    {
+      "src": "/css/(.*)",
+      "headers": { "Cache-Control": "public, max-age=3600" },
+      "dest": "/css/$1"
+    },
+    {
+      "src": "/pages/(.*)",
+      "headers": { "Cache-Control": "no-cache" },
+      "dest": "/pages/$1"
+    },
+    {
+      "src": "/",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/(.*\\.html)",
+      "dest": "/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  }
+}
